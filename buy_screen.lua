@@ -1761,13 +1761,16 @@ function CharacterIcon:on_mouse_enter()
   self.info_text = InfoText{group = main.current.ui}
   local char_name = T('char_' .. self.character, self.character)
   if lang.current == 'en' then char_name = self.character:capitalize() end
+  -- v0.1.3 (한국어화 fork): 한국어 모드면 한글 설명 함수 테이블 사용
+  local desc_func = (lang.current == 'ko' and lang.character_descriptions_ko and lang.character_descriptions_ko[self.character]) or character_descriptions[self.character]
+  local effect_name = (lang.current == 'ko' and lang.character_effect_names_ko and lang.character_effect_names_ko[self.character]) or (self.level == 3 and character_effect_names[self.character] or character_effect_names_gray[self.character])
+  local effect_desc_func = (lang.current == 'ko' and lang.character_effect_descriptions_ko and lang.character_effect_descriptions_ko[self.character]) or (self.level == 3 and character_effect_descriptions[self.character] or character_effect_descriptions_gray[self.character])
   self.info_text:activate({
     {text = '[' .. character_color_strings[self.character] .. ']' .. char_name .. '[fg] - ' .. T('cost_label', 'cost: ') .. '[yellow]' .. self.parent.cost, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
     {text = '[fg]' .. T('class_label_hover', 'Classes: ') .. character_class_strings[self.character], font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = character_descriptions[self.character](1), font = pixul_font, alignment = 'center', height_multiplier = 2},
-    {text = '[' .. (self.level == 3 and 'yellow' or 'light_bg') .. ']Lv.3 [' .. (self.level == 3 and 'fg' or 'light_bg') .. ']' .. T('lv3_effect_label', 'Effect - ') ..
-      (self.level == 3 and character_effect_names[self.character] or character_effect_names_gray[self.character]), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = (self.level == 3 and character_effect_descriptions[self.character]() or character_effect_descriptions_gray[self.character]()), font = pixul_font, alignment = 'center'},
+    {text = desc_func(1), font = pixul_font, alignment = 'center', height_multiplier = 2},
+    {text = '[' .. (self.level == 3 and 'yellow' or 'light_bg') .. ']Lv.3 [' .. (self.level == 3 and 'fg' or 'light_bg') .. ']' .. T('lv3_effect_label', 'Effect - ') .. effect_name, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = effect_desc_func(), font = pixul_font, alignment = 'center'},
     -- {text = character_stats[self.character](1), font = pixul_font, alignment = 'center'},
   }, nil, nil, nil, nil, 16, 4, nil, 2)
   self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
