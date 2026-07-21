@@ -162,6 +162,11 @@ return {
   classes_label     = '클래스',
   items_label       = '아이템',
 
+  -- ===== Hover info_text (CharacterIcon:on_mouse_enter) =====
+  cost_label        = '비용: ',
+  class_label_hover = '클래스: ',
+  lv3_effect_label  = '효과 - ',
+
   -- ===== 튜토리얼 (buy_screen.lua) =====
   welcome_desc8     = "이건 [yellow]25 골드[fg] 이상 모아도 이자가 더 늘지 않는다는 뜻입니다.",
   welcome_luck      = '행운을 빕니다!',
