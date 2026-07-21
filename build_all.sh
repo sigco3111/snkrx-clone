@@ -42,11 +42,12 @@ fi
 cp "$LOVE_OUTPUT" "$WINDOWS_DIR/"
 # run.bat와 README.txt 생성
 if [ ! -f "$WINDOWS_DIR/run.bat" ]; then
-    # v0.1.15 fix: 순수 ASCII 명령만 사용 (Windows CMD 코드페이지 949 환경에서 한글 깨짐 방지)
+    # v0.1.17 fix: love.exe는 love-11.5-win64 하위 폴더에 있음
     cat > "$WINDOWS_DIR/run.bat" <<'BAT'
 @echo off
 REM SNKRX Korean fork launcher (Windows)
 cd /d "%~dp0"
+cd love-11.5-win64
 love.exe snkrx-kr-v0.1.12.love
 if errorlevel 1 (
     echo.
@@ -56,7 +57,7 @@ if errorlevel 1 (
     pause
 )
 BAT
-    echo "✅ run.bat 생성 (ASCII 전용)"
+    echo "✅ run.bat 생성 (love-11.5-win64 진입)"
 fi
 if [ ! -f "$WINDOWS_DIR/README.txt" ]; then
     # README.txt는 한글 가능 (사용자가 메모장으로 열면 자동 디코딩)
@@ -65,7 +66,7 @@ SNKRX Korean fork v0.1.12 (Windows)
 
 [How to Run]
 1. Double-click run.bat
-2. Or: love.exe snkrx-kr-v0.1.12.love
+2. Or: cd love-11.5-win64 && love.exe snkrx-kr-v0.1.12.love
 
 [Controls]
 - A/D or Arrow keys : Move snake left/right
@@ -74,9 +75,9 @@ SNKRX Korean fork v0.1.12 (Windows)
 
 [Troubleshooting]
 - "Missing DLL": Install Visual C++ 2013 Redistributable
-- Run with console: lovec.exe snkrx-kr-v0.1.12.love
+- Run with console: cd love-11.5-win64 && lovec.exe snkrx-kr-v0.1.12.love
 
-[원본/Original] https://github.com/a327ex/SNKRX
+[Original] https://github.com/a327ex/SNKRX
 [Fork] https://github.com/sigco3111/snkrx-clone
 TXT
     echo "✅ README.txt 생성"
