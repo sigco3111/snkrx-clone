@@ -48,33 +48,49 @@ mkdir -p "$GAME_DIR"
 (cd "$GAME_DIR" && unzip -q -o "$LOVE_OUTPUT")
 echo "✅ 게임 폴더 추출: $GAME_DIR ($(ls "$GAME_DIR" | wc -l) 항목)"
 
+# v0.1.19: .love zip 파일도 함께 포함 (사용자 선택권)
+# game/ 폴더는 한글 경로 안전, .love는 영어 경로에서 사용 가능
+cp "$LOVE_OUTPUT" "$WINDOWS_DIR/love-11.5-win64/" 2>/dev/null || true
+echo "✅ .love zip도 포함 (영문 경로 사용자용)"
+
 # run.bat와 README.txt 생성
 if [ ! -f "$WINDOWS_DIR/run.bat" ]; then
-    # v0.1.18 fix: 게임 폴더 경로 사용 (love.exe 옆에 game/ 폴더)
+    # v0.1.19: 기본은 game/ 폴더 (한글 경로 안전), .love도 옵션
     cat > "$WINDOWS_DIR/run.bat" <<'BAT'
 @echo off
 REM SNKRX Korean fork launcher (Windows)
 cd /d "%~dp0"
 cd love-11.5-win64
+echo Starting SNKRX (folder mode)...
 love.exe game
 if errorlevel 1 (
     echo.
-    echo Game failed to start.
-    echo Install Visual C++ 2013 Redistributable.
-    echo Or run: cd love-11.5-win64 && lovec.exe game
-    pause
+    echo Folder mode failed. Trying .love zip mode...
+    love.exe snkrx-kr-v0.1.12.love
+    if errorlevel 1 (
+        echo.
+        echo Both modes failed.
+        echo Install Visual C++ 2013 Redistributable.
+        echo Or run: lovec.exe game
+        pause
+    )
 )
 BAT
-    echo "✅ run.bat 생성 (love.exe game)"
+    echo "✅ run.bat 생성 (game/ 폴더 + .love 폴백)"
 fi
 if [ ! -f "$WINDOWS_DIR/README.txt" ]; then
-    # README.txt는 한글 가능 (사용자가 메모장으로 열면 자동 디코딩)
     cat > "$WINDOWS_DIR/README.txt" <<'TXT'
 SNKRX Korean fork v0.1.12 (Windows)
 
 [How to Run]
 1. Double-click run.bat
-2. Or: cd love-11.5-win64 && love.exe game
+   - Default: runs from game/ folder (works on Korean Windows paths)
+   - Fallback: runs from .love zip (if game/ fails)
+
+[Manual Run]
+cd love-11.5-win64
+love.exe game                (folder mode, recommended)
+love.exe snkrx-kr-v0.1.12.love (zip mode)
 
 [Controls]
 - A/D or Arrow keys : Move snake left/right
@@ -83,7 +99,7 @@ SNKRX Korean fork v0.1.12 (Windows)
 
 [Troubleshooting]
 - "Missing DLL": Install Visual C++ 2013 Redistributable
-- Run with console: cd love-11.5-win64 && lovec.exe game
+- Run with console: lovec.exe game
 
 [Original] https://github.com/a327ex/SNKRX
 [Fork] https://github.com/sigco3111/snkrx-clone
