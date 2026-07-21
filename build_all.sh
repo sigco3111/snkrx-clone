@@ -39,25 +39,33 @@ if [ ! -f "$WINDOWS_DIR/love.exe" ]; then
     (cd "$WINDOWS_DIR" && unzip -q -o love.zip)
     rm "$WINDOWS_DIR/love.zip"
 fi
-cp "$LOVE_OUTPUT" "$WINDOWS_DIR/"
+
+# v0.1.18: .love zip 파일을 폴더로 풀어서 love-11.5-win64/game/ 에 넣음
+# 이유: 일부 환경(특히 한글 Windows 경로)에서 .love zip 인식 실패
+GAME_DIR="$WINDOWS_DIR/love-11.5-win64/game"
+rm -rf "$GAME_DIR"
+mkdir -p "$GAME_DIR"
+(cd "$GAME_DIR" && unzip -q -o "$LOVE_OUTPUT")
+echo "✅ 게임 폴더 추출: $GAME_DIR ($(ls "$GAME_DIR" | wc -l) 항목)"
+
 # run.bat와 README.txt 생성
 if [ ! -f "$WINDOWS_DIR/run.bat" ]; then
-    # v0.1.17 fix: love.exe는 love-11.5-win64 하위 폴더에 있음
+    # v0.1.18 fix: 게임 폴더 경로 사용 (love.exe 옆에 game/ 폴더)
     cat > "$WINDOWS_DIR/run.bat" <<'BAT'
 @echo off
 REM SNKRX Korean fork launcher (Windows)
 cd /d "%~dp0"
 cd love-11.5-win64
-love.exe snkrx-kr-v0.1.12.love
+love.exe game
 if errorlevel 1 (
     echo.
     echo Game failed to start.
     echo Install Visual C++ 2013 Redistributable.
-    echo Or run: lovec.exe snkrx-kr-v0.1.12.love
+    echo Or run: cd love-11.5-win64 && lovec.exe game
     pause
 )
 BAT
-    echo "✅ run.bat 생성 (love-11.5-win64 진입)"
+    echo "✅ run.bat 생성 (love.exe game)"
 fi
 if [ ! -f "$WINDOWS_DIR/README.txt" ]; then
     # README.txt는 한글 가능 (사용자가 메모장으로 열면 자동 디코딩)
@@ -66,7 +74,7 @@ SNKRX Korean fork v0.1.12 (Windows)
 
 [How to Run]
 1. Double-click run.bat
-2. Or: cd love-11.5-win64 && love.exe snkrx-kr-v0.1.12.love
+2. Or: cd love-11.5-win64 && love.exe game
 
 [Controls]
 - A/D or Arrow keys : Move snake left/right
@@ -75,7 +83,7 @@ SNKRX Korean fork v0.1.12 (Windows)
 
 [Troubleshooting]
 - "Missing DLL": Install Visual C++ 2013 Redistributable
-- Run with console: cd love-11.5-win64 && lovec.exe snkrx-kr-v0.1.12.love
+- Run with console: cd love-11.5-win64 && lovec.exe game
 
 [Original] https://github.com/a327ex/SNKRX
 [Fork] https://github.com/sigco3111/snkrx-clone
