@@ -58,6 +58,9 @@ function shared_init()
   lang.character_descriptions_ko = require('lang.character_descriptions_ko')
   lang.character_effect_descriptions_ko = require('lang.character_effect_descriptions_ko')
   lang.class_descriptions_ko = require('lang.class_descriptions_ko')
+  -- v0.1.9 (한국어화 fork): 패시브 이름 + 설명 한글 테이블
+  lang.passive_names_ko = require('lang.passive_names_ko')
+  lang.passive_descriptions_level_ko = require('lang.passive_descriptions_level_ko')
 
   function T(key, default)
     local dict = lang.dicts[lang.current] or {}

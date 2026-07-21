@@ -1365,8 +1365,9 @@ function PassiveCard:init(args)
   self:init_game_object(args)
   self.shape = Rectangle(self.x, self.y, self.w, self.h)
   self.interact_with_mouse = true
-  self.passive_name =  Text({{text = '[fg, wavy_mid]' .. passive_names[self.passive], font = pixul_font, alignment = 'center'}}, global_text_tags)
-  self.passive_description = passive_descriptions[self.passive]
+  local p_name = (lang.current == 'ko' and lang.passive_names_ko and lang.passive_names_ko.names and lang.passive_names_ko.names[self.passive]) or passive_names[self.passive]
+  self.passive_name =  Text({{text = '[fg, wavy_mid]' .. p_name, font = pixul_font, alignment = 'center'}}, global_text_tags)
+  self.passive_description = (lang.current == 'ko' and lang.passive_names_ko and lang.passive_names_ko.descriptions and lang.passive_names_ko.descriptions[self.passive]) or passive_descriptions[self.passive]
   self.spring:pull(0.2, 200, 10)
 end
 
@@ -1529,19 +1530,25 @@ function ItemCard:create_info_text()
   end
   self.info_text = nil
   if self.level == 3 or self.unlevellable then
+    -- v0.1.9: 패시브 이름 + 설명 한글화 (local은 activate 밖에서)
+    local p_name_l3 = (lang.current == 'ko' and lang.passive_names_ko and lang.passive_names_ko.names and lang.passive_names_ko.names[self.passive]) or passive_names[self.passive]
+    local p_desc_l3 = (lang.current == 'ko' and lang.passive_descriptions_level_ko and lang.passive_descriptions_level_ko[self.passive]) or passive_descriptions_level[self.passive]
     self.info_text = InfoText{group = main.current.ui, force_update = true}
     self.info_text:activate({
-      {text = '[fg]' .. passive_names[self.passive] .. ', [yellow]Lv.' .. self.level, font = pixul_font, alignment = 'center',
+      {text = '[fg]' .. p_name_l3 .. ', [yellow]Lv.' .. self.level, font = pixul_font, alignment = 'center',
         height_multiplier = 1.25},
-      {text = passive_descriptions_level[self.passive](self.level), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+      {text = p_desc_l3(self.level), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
     }, nil, nil, nil, nil, 16, 4, nil, 2)
     self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
   else
+    -- v0.1.9: 패시브 이름 + 설명 한글화 (local은 activate 밖에서)
+    local p_name_n = (lang.current == 'ko' and lang.passive_names_ko and lang.passive_names_ko.names and lang.passive_names_ko.names[self.passive]) or passive_names[self.passive]
+    local p_desc_n = (lang.current == 'ko' and lang.passive_descriptions_level_ko and lang.passive_descriptions_level_ko[self.passive]) or passive_descriptions_level[self.passive]
     self.info_text = InfoText{group = main.current.ui, force_update = true}
     self.info_text:activate({
-      {text = '[fg]' .. passive_names[self.passive] .. ', [yellow]Lv.' .. self.level .. '[fg], XP: [yellow]' .. self.xp .. '/' .. self.max_xp .. T('msg_item_xp_cost', '[fg], +1 XP 비용: [yellow]5[fg], ') .. T('sell_for_label', '판매 가격: ') .. '[yellow]' .. 
+      {text = '[fg]' .. p_name_n .. ', [yellow]Lv.' .. self.level .. '[fg], XP: [yellow]' .. self.xp .. '/' .. self.max_xp .. T('msg_item_xp_cost', '[fg], +1 XP 비용: [yellow]5[fg], ') .. T('sell_for_label', '판매 가격: ') .. '[yellow]' ..
         tostring((self.level == 1 and 10) or (self.level == 2 and 20) or (self.level == 3 and 30)), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-      {text = passive_descriptions_level[self.passive](self.level), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+      {text = p_desc_n(self.level), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
     }, nil, nil, nil, nil, 16, 4, nil, 2)
     self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
   end
