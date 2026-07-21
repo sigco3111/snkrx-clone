@@ -1734,7 +1734,9 @@ function CharacterIcon:init(args)
   self:init_game_object(args)
   self.shape = Rectangle(self.x, self.y, 40, 20)
   self.interact_with_mouse = true
-  self.character_text = Text({{text = '[' .. character_color_strings[self.character] .. ']' .. string.lower(character_names[self.character]), font = pixul_font, alignment = 'center'}}, global_text_tags)
+  local char_name = T('char_' .. self.character, character_names[self.character])
+  if lang.current == 'en' then char_name = string.lower(char_name) end
+  self.character_text = Text({{text = '[' .. character_color_strings[self.character] .. ']' .. char_name, font = pixul_font, alignment = 'center'}}, global_text_tags)
 end
 
 

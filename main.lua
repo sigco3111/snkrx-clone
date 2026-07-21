@@ -1985,7 +1985,7 @@ function open_options(self)
       b:set_text('music volume: ' .. tostring((state.music_volume or 0.5)*10))
     end}
 
-    self.video_button_1 = Button{group = self.ui, x = gw/2 - 136, y = gh - 125, force_update = true, button_text = 'window size-', fg_color = 'bg10', bg_color = 'bg', action = function()
+    self.video_button_1 = Button{group = self.ui, x = gw/2 - 136, y = gh - 125, force_update = true, button_text = T('option_window_size_minus', 'window size-'), fg_color = 'bg10', bg_color = 'bg', action = function()
       if sx > 1 and sy > 1 then
         ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
         sx, sy = sx - 0.5, sy - 0.5
@@ -1995,7 +1995,7 @@ function open_options(self)
       end
     end}
 
-    self.video_button_2 = Button{group = self.ui, x = gw/2 - 50, y = gh - 125, force_update = true, button_text = 'window size+', fg_color = 'bg10', bg_color = 'bg', action = function()
+    self.video_button_2 = Button{group = self.ui, x = gw/2 - 50, y = gh - 125, force_update = true, button_text = T('option_window_size_plus', 'window size+'), fg_color = 'bg10', bg_color = 'bg', action = function()
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       sx, sy = sx + 0.5, sy + 0.5
       love.window.setMode(480*sx, 270*sy)
@@ -2003,7 +2003,7 @@ function open_options(self)
       state.fullscreen = false
     end}
 
-    self.video_button_3 = Button{group = self.ui, x = gw/2 + 29, y = gh - 125, force_update = true, button_text = 'fullscreen', fg_color = 'bg10', bg_color = 'bg', action = function()
+    self.video_button_3 = Button{group = self.ui, x = gw/2 + 29, y = gh - 125, force_update = true, button_text = T('option_fullscreen', 'fullscreen'), fg_color = 'bg10', bg_color = 'bg', action = function()
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       local _, _, flags = love.window.getMode()
       local window_width, window_height = love.window.getDesktopDimensions(flags.display)
@@ -2013,7 +2013,7 @@ function open_options(self)
       love.window.setMode(window_width, window_height)
     end}
 
-    self.video_button_4 = Button{group = self.ui, x = gw/2 + 129, y = gh - 125, force_update = true, button_text = 'reset video settings', fg_color = 'bg10', bg_color = 'bg', action = function()
+    self.video_button_4 = Button{group = self.ui, x = gw/2 + 129, y = gh - 125, force_update = true, button_text = T('option_reset_video', 'reset video settings'), fg_color = 'bg10', bg_color = 'bg', action = function()
       local _, _, flags = love.window.getMode()
       local window_width, window_height = love.window.getDesktopDimensions(flags.display)
       sx, sy = window_width/480, window_height/270
@@ -2024,11 +2024,11 @@ function open_options(self)
       love.window.setMode(window_width, window_height)
     end}
 
-    self.screen_shake_button = Button{group = self.ui, x = gw/2 - 57, y = gh - 100, w = 110, force_update = true, button_text = '[bg10]screen shake: ' .. tostring(state.no_screen_shake and 'no' or 'yes'), 
+    self.screen_shake_button = Button{group = self.ui, x = gw/2 - 57, y = gh - 100, w = 110, force_update = true, button_text = '[bg10]' .. T('option_screen_shake', 'screen shake: ') .. tostring(state.no_screen_shake and T('no', 'no') or T('yes', 'yes')),
     fg_color = 'bg10', bg_color = 'bg', action = function(b)
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       state.no_screen_shake = not state.no_screen_shake
-      b:set_text('screen shake: ' .. tostring(state.no_screen_shake and 'no' or 'yes'))
+      b:set_text('[bg10]' .. T('option_screen_shake', 'screen shake: ') .. tostring(state.no_screen_shake and T('no', 'no') or T('yes', 'yes')))
     end}
 
     self.cooldown_snake_button = Button{group = self.ui, x = gw/2 + 75, y = gh - 100, w = 145, force_update = true, button_text = '[bg10]cooldowns on snake: ' .. tostring(state.cooldown_snake and 'yes' or 'no'), 
