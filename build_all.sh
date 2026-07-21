@@ -40,8 +40,43 @@ if [ ! -f "$WINDOWS_DIR/love.exe" ]; then
     rm "$WINDOWS_DIR/love.zip"
 fi
 cp "$LOVE_OUTPUT" "$WINDOWS_DIR/"
+# run.bat와 README.txt 생성
+if [ ! -f "$WINDOWS_DIR/run.bat" ]; then
+    cat > "$WINDOWS_DIR/run.bat" <<'BAT'
+@echo off
+REM SNKRX 한국어화 fork 실행 스크립트 (Windows)
+cd /d "%~dp0"
+love.exe snkrx-kr-v0.1.12.love
+if errorlevel 1 (
+    echo 게임 실행 중 오류.
+    pause
+)
+BAT
+    echo "✅ run.bat 생성"
+fi
+if [ ! -f "$WINDOWS_DIR/README.txt" ]; then
+    cat > "$WINDOWS_DIR/README.txt" <<'TXT'
+SNKRX 한국어화 fork v0.1.12 (Windows)
+
+[실행]
+1. run.bat 더블클릭
+2. 또는: love.exe snkrx-kr-v0.1.12.love
+
+[키 조작]
+- A/D 또는 ←/→ : 뱀 좌/우 조종
+- Space : 일시정지
+- 마우스 : 유닛 구매/판매
+
+[문제 해결]
+- "DLL 없음": Visual C++ 2013 재배포 패키지 설치
+- 콘솔 표시하며 실행: lovec.exe snkrx-kr-v0.1.12.love
+
+https://github.com/sigco3111/snkrx-clone
+TXT
+    echo "✅ README.txt 생성"
+fi
 rm -f "$DIST_DIR/snkrx-kr-windows-$VERSION.zip"
-(cd "$WINDOWS_DIR" && zip -r "$DIST_DIR/snkrx-kr-windows-$VERSION.zip" love-11.5-win64/ -q)
+(cd "$WINDOWS_DIR" && zip -r "$DIST_DIR/snkrx-kr-windows-$VERSION.zip" love-11.5-win64/ run.bat README.txt -q)
 echo "✅ Windows: snkrx-kr-windows-$VERSION.zip"
 echo
 
