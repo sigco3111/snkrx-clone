@@ -907,13 +907,13 @@ function LevelButton:create_info_text()
     local t41, t42 = get_shop_odds(self.parent.shop_level, 4), get_shop_odds(self.parent.shop_level+1, 4)
     self.info_text = InfoText{group = main.current.ui}
     self.info_text:activate({
-      {text = '[yellow]Lv.' .. self.parent.shop_level .. '[fg] shop, XP: [yellow]' .. self.shop_xp .. '/' .. self.max_xp .. '[fg], +1 XP cost: [yellow]5', font = pixul_font, alignment = 'center', height_multiplier = 1.5},
-      {text = '[bg10]chances of units appearing on the shop', font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-      {text = '[yellow]current shop level                  [fgm10]next shop level', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[fg]tier 1: ' .. t11 .. '%' .. tostring(t11 < 10 and '  ' or '') .. '                                 [fgm8]tier 1: ' .. t12 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[green]tier 2: ' .. t21 .. '%' .. tostring(t21 < 10 and '  ' or '') .. '                                 [fgm6]tier 2: ' .. t22 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[blue]tier 3: ' .. t31 .. '%' .. tostring(t31 < 10 and '  ' or '') .. '                                 [fgm4]tier 3: ' .. t32 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[purple]tier 4: ' .. t41 .. '%' .. tostring(t41 < 10 and '  ' or '') .. '                                 [fgm2]tier 4: ' .. t42 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = T('msg_shop_xp', '[yellow]Lv.') .. self.parent.shop_level .. T('msg_shop_xp_2', '[fg] 상점, XP: [yellow]') .. self.shop_xp .. '/' .. self.max_xp .. T('msg_shop_xp_3', '[fg], +1 XP 비용: [yellow]5'), font = pixul_font, alignment = 'center', height_multiplier = 1.5},
+      {text = T('msg_shop_chances', '[bg10]상점 등장 확률'), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+      {text = T('msg_shop_curr_next', '[yellow]현재 상점 레벨                  [fgm10]다음 상점 레벨'), font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[fg]1등급: ' .. t11 .. '%' .. tostring(t11 < 10 and '  ' or '') .. '                                 [fgm8]1등급: ' .. t12 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[green]2등급: ' .. t21 .. '%' .. tostring(t21 < 10 and '  ' or '') .. '                                 [fgm6]2등급: ' .. t22 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[blue]3등급: ' .. t31 .. '%' .. tostring(t31 < 10 and '  ' or '') .. '                                 [fgm4]3등급: ' .. t32 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[purple]4등급: ' .. t41 .. '%' .. tostring(t41 < 10 and '  ' or '') .. '                                 [fgm2]4등급: ' .. t42 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
     }, nil, nil, nil, nil, 16, 4, nil, 2)
     self.info_text.x, self.info_text.y = gw/2, gh/2 - 45
   elseif self.parent.shop_level == 5 then
@@ -923,13 +923,13 @@ function LevelButton:create_info_text()
     local t41 = get_shop_odds(self.parent.shop_level, 4)
     self.info_text = InfoText{group = main.current.ui}
     self.info_text:activate({
-      {text = '[yellow]Lv.' .. self.parent.shop_level .. '[fg] shop', font = pixul_font, alignment = 'center', height_multiplier = 1.5},
-      {text = '[bg10]chances of units appearing on the shop', font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-      {text = '[yellow]current shop level', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[fg]tier 1: ' .. t11 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[green]tier 2: ' .. t21 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[blue]tier 3: ' .. t31 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
-      {text = '[purple]tier 4: ' .. t41 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = T('msg_shop_max', '[yellow]Lv.') .. self.parent.shop_level .. T('msg_shop_max_2', '[fg] 상점'), font = pixul_font, alignment = 'center', height_multiplier = 1.5},
+      {text = T('msg_shop_chances', '[bg10]상점 등장 확률'), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+      {text = T('msg_shop_curr', '[yellow]현재 상점 레벨'), font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[fg]1등급: ' .. t11 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[green]2등급: ' .. t21 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[blue]3등급: ' .. t31 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
+      {text = '[purple]4등급: ' .. t41 .. '%', font = pixul_font, alignment = 'left', height_multiplier = 1.25},
     }, nil, nil, nil, nil, 16, 4, nil, 2)
     self.info_text.x, self.info_text.y = gw/2, gh/2 - 45
   end
@@ -1114,15 +1114,20 @@ function TutorialCharacterPart:on_mouse_enter()
   ui_hover1:play{pitch = random:float(1.3, 1.5), volume = 0.5}
   self.selected = true
   self.spring:pull(0.2, 200, 10)
+  -- v0.1.7 (한국어화 fork): 영웅 이름 + 설명/효과 한글화 (local은 함수 인자 밖에서)
+  local char_name_t = T('char_' .. self.character, self.character)
+  if lang.current == 'en' then char_name_t = self.character:capitalize() end
+  local desc_func_t = (lang.current == 'ko' and lang.character_descriptions_ko and lang.character_descriptions_ko[self.character]) or character_descriptions[self.character]
+  local effect_name_t = (lang.current == 'ko' and lang.character_effect_names_ko and lang.character_effect_names_ko[self.character]) or (self.level == 3 and character_effect_names[self.character] or character_effect_names_gray[self.character])
+  local effect_desc_func_t = (lang.current == 'ko' and lang.character_effect_descriptions_ko and lang.character_effect_descriptions_ko[self.character]) or (self.level == 3 and character_effect_descriptions[self.character] or character_effect_descriptions_gray[self.character])
   self.info_text = InfoText{group = main.current.tutorial}
   self.info_text:activate({
-    {text = '[' .. character_color_strings[self.character] .. ']' .. self.character:capitalize() .. '[fg] - [yellow]Lv.' .. self.level,
+    {text = '[' .. character_color_strings[self.character] .. ']' .. char_name_t .. '[fg] - [yellow]Lv.' .. self.level,
     font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = '[fg]Classes: ' .. character_class_strings[self.character], font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = character_descriptions[self.character](self.level), font = pixul_font, alignment = 'center', height_multiplier = 2},
-    {text = '[' .. (self.level == 3 and 'yellow' or 'light_bg') .. ']Lv.3 [' .. (self.level == 3 and 'fg' or 'light_bg') .. ']Effect - ' .. 
-      (self.level == 3 and character_effect_names[self.character] or character_effect_names_gray[self.character]), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = (self.level == 3 and character_effect_descriptions[self.character]() or character_effect_descriptions_gray[self.character]()), font = pixul_font, alignment = 'center'},
+    {text = '[fg]' .. T('class_label_hover', 'Classes: ') .. character_class_strings[self.character], font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = desc_func_t(self.level), font = pixul_font, alignment = 'center', height_multiplier = 2},
+    {text = '[' .. (self.level == 3 and 'yellow' or 'light_bg') .. ']Lv.3 [' .. (self.level == 3 and 'fg' or 'light_bg') .. ']' .. T('lv3_effect_label', 'Effect - ') .. effect_name_t, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = effect_desc_func_t(), font = pixul_font, alignment = 'center'},
   }, nil, nil, nil, nil, 16, 4, nil, 2)
   self.info_text.x, self.info_text.y = gw/2, gh/2 + gh/4 - 12
 end
@@ -1258,15 +1263,20 @@ function CharacterPart:on_mouse_enter()
   ui_hover1:play{pitch = random:float(1.3, 1.5), volume = 0.5}
   self.selected = true
   self.spring:pull(0.2, 200, 10)
+  -- v0.1.7 (한국어화 fork): 파티/클래스 hover 영웅 이름 + 설명/효과 한글화
+  local char_name_p = T('char_' .. self.character, self.character)
+  if lang.current == 'en' then char_name_p = self.character:capitalize() end
+  local desc_func_p = (lang.current == 'ko' and lang.character_descriptions_ko and lang.character_descriptions_ko[self.character]) or character_descriptions[self.character]
+  local effect_name_p = (lang.current == 'ko' and lang.character_effect_names_ko and lang.character_effect_names_ko[self.character]) or (self.level == 3 and character_effect_names[self.character] or character_effect_names_gray[self.character])
+  local effect_desc_func_p = (lang.current == 'ko' and lang.character_effect_descriptions_ko and lang.character_effect_descriptions_ko[self.character]) or (self.level == 3 and character_effect_descriptions[self.character] or character_effect_descriptions_gray[self.character])
   self.info_text = InfoText{group = main.current.ui, force_update = self.force_update}
   self.info_text:activate({
-    {text = '[' .. character_color_strings[self.character] .. ']' .. self.character:capitalize() .. '[fg] - [yellow]Lv.' .. self.level .. '[fg], tier [yellow]' .. character_tiers[self.character] .. '[fg] - sells for [yellow]' ..
+    {text = '[' .. character_color_strings[self.character] .. ']' .. char_name_p .. '[fg] - [yellow]Lv.' .. self.level .. '[fg], ' .. T('tier_label', 'tier ') .. '[yellow]' .. character_tiers[self.character] .. '[fg] - ' .. T('sell_for', 'sells for ') .. '[yellow]' ..
       self:get_sale_price(), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = '[fg]Classes: ' .. character_class_strings[self.character], font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = character_descriptions[self.character](self.level), font = pixul_font, alignment = 'center', height_multiplier = 2},
-    {text = '[' .. (self.level == 3 and 'yellow' or 'light_bg') .. ']Lv.3 [' .. (self.level == 3 and 'fg' or 'light_bg') .. ']Effect - ' .. 
-      (self.level == 3 and character_effect_names[self.character] or character_effect_names_gray[self.character]), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = (self.level == 3 and character_effect_descriptions[self.character]() or character_effect_descriptions_gray[self.character]()), font = pixul_font, alignment = 'center'},
+    {text = '[fg]' .. T('class_label_hover', 'Classes: ') .. character_class_strings[self.character], font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = desc_func_p(self.level), font = pixul_font, alignment = 'center', height_multiplier = 2},
+    {text = '[' .. (self.level == 3 and 'yellow' or 'light_bg') .. ']Lv.3 [' .. (self.level == 3 and 'fg' or 'light_bg') .. ']' .. T('lv3_effect_label', 'Effect - ') .. effect_name_p, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = effect_desc_func_p(), font = pixul_font, alignment = 'center'},
   }, nil, nil, nil, nil, 16, 4, nil, 2)
   self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
 
@@ -1529,7 +1539,7 @@ function ItemCard:create_info_text()
   else
     self.info_text = InfoText{group = main.current.ui, force_update = true}
     self.info_text:activate({
-      {text = '[fg]' .. passive_names[self.passive] .. ', [yellow]Lv.' .. self.level .. '[fg], XP: [yellow]' .. self.xp .. '/' .. self.max_xp .. '[fg], +1 XP cost: [yellow]5[fg], sells for: [yellow]' .. 
+      {text = '[fg]' .. passive_names[self.passive] .. ', [yellow]Lv.' .. self.level .. '[fg], XP: [yellow]' .. self.xp .. '/' .. self.max_xp .. T('msg_item_xp_cost', '[fg], +1 XP 비용: [yellow]5[fg], ') .. T('sell_for_label', '판매 가격: ') .. '[yellow]' .. 
         tostring((self.level == 1 and 10) or (self.level == 2 and 20) or (self.level == 3 and 30)), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
       {text = passive_descriptions_level[self.passive](self.level), font = pixul_font, alignment = 'center', height_multiplier = 1.25},
     }, nil, nil, nil, nil, 16, 4, nil, 2)
@@ -1856,11 +1866,15 @@ end
 function TutorialClassIcon:on_mouse_enter()
   ui_hover1:play{pitch = random:float(1.3, 1.5), volume = 0.5}
   self.spring:pull(0.2, 200, 10)
+  -- v0.1.7 (한국어화 fork): 튜토리얼 클래스 hover 한글화
+  local class_name_t = T('class_' .. self.class, self.class)
+  if lang.current == 'en' then class_name_t = self.class:capitalize() end
+  local class_desc_func_t = (lang.current == 'ko' and lang.class_descriptions_ko and lang.class_descriptions_ko[self.class]) or class_descriptions[self.class]
   local i, j, k, owned = class_set_numbers[self.class](self.units)
   self.info_text = InfoText{group = main.current.tutorial}
   self.info_text:activate({
-    {text = '[' .. class_color_strings[self.class] .. ']' .. self.class:capitalize() .. '[fg] - owned: [yellow]' .. owned, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = class_descriptions[self.class]((owned >= j and 2) or (owned >= i and 1) or 0), font = pixul_font, alignment = 'center'},
+    {text = '[' .. class_color_strings[self.class] .. ']' .. class_name_t .. '[fg] - ' .. T('owned_label', 'owned: ') .. '[yellow]' .. owned, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = class_desc_func_t((owned >= j and 2) or (owned >= i and 1) or 0), font = pixul_font, alignment = 'center'},
   }, nil, nil, nil, nil, 16, 4, nil, 2)
   self.info_text.x, self.info_text.y = gw/2 - 25, gh/2 + 25
 end
@@ -2016,11 +2030,15 @@ end
 function ClassIcon:on_mouse_enter()
   ui_hover1:play{pitch = random:float(1.3, 1.5), volume = 0.5}
   self.spring:pull(0.2, 200, 10)
+  -- v0.1.7 (한국어화 fork): 클래스 hover 한글화
+  local class_name_c = T('class_' .. self.class, self.class)
+  if lang.current == 'en' then class_name_c = self.class:capitalize() end
+  local class_desc_func_c = (lang.current == 'ko' and lang.class_descriptions_ko and lang.class_descriptions_ko[self.class]) or class_descriptions[self.class]
   local i, j, k, owned = class_set_numbers[self.class](self.units)
   self.info_text = InfoText{group = main.current.ui}
   self.info_text:activate({
-    {text = '[' .. class_color_strings[self.class] .. ']' .. (self.class == 'conjurer' and 'Builder' or self.class:capitalize()) .. '[fg] - owned: [yellow]' .. owned, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
-    {text = class_descriptions[self.class]((k and (owned >= k and 3)) or (owned >= j and 2) or (owned >= i and 1) or 0), font = pixul_font, alignment = 'center'},
+    {text = '[' .. class_color_strings[self.class] .. ']' .. class_name_c .. '[fg] - ' .. T('owned_label', 'owned: ') .. '[yellow]' .. owned, font = pixul_font, alignment = 'center', height_multiplier = 1.25},
+    {text = class_desc_func_c((k and (owned >= k and 3)) or (owned >= j and 2) or (owned >= i and 1) or 0), font = pixul_font, alignment = 'center'},
   }, nil, nil, nil, nil, 16, 4, nil, 2)
   self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
 

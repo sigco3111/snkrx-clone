@@ -239,6 +239,41 @@ return {
   msg_no_units       = '[fg]유닛 [yellow]0[fg]개로는 라운드를 시작할 수 없습니다',
   msg_no_gold        = '[fg]골드가 부족합니다',
 
+  -- ===== LevelButton hover (상점 확률) =====
+  msg_shop_xp        = '[yellow]Lv.',
+  msg_shop_xp_2      = '[fg] 상점, XP: [yellow]',
+  msg_shop_xp_3      = '[fg], +1 XP 비용: [yellow]5',
+  msg_shop_max       = '[yellow]Lv.',
+  msg_shop_max_2     = '[fg] 상점',
+  msg_shop_chances   = '[bg10]상점 등장 확률',
+  msg_shop_curr_next = '[yellow]현재 상점 레벨                  [fgm10]다음 상점 레벨',
+  msg_shop_curr      = '[yellow]현재 상점 레벨',
+
+  -- ===== 클래스명 한글 (class_descriptions 표시용) =====
+  class_ranger       = '레인저',
+  class_warrior      = '전사',
+  class_mage         = '마법사',
+  class_rogue        = '도적',
+  class_healer       = '힐러',
+  class_enchanter    = '인챈터',
+  class_nuker        = '누커',
+  class_conjurer     = '컨저러',
+  class_psyker       = '사이커',
+  class_curser       = '커서',
+  class_forcer       = '포서',
+  class_swarmer      = '스워머',
+  class_voider       = '보이드',
+  class_sorcerer     = '소서러',
+  class_mercenary    = '머서너리',
+  class_explorer     = '탐험가',
+
+  -- ===== 기타 라벨 =====
+  tier_label         = '등급',
+  sell_for           = '판매 가격: ',
+  sell_for_label     = '판매 가격: ',
+  owned_label        = '보유: ',
+  msg_item_xp_cost   = '[fg], +1 XP 비용: [yellow]5[fg], ',
+
   -- ===== arena.lua 승리/엔딩 메시지 =====
   your_build           = '[wavy_mid, fg]내 빌드',
   msg_victory_real     = '[fg]정말로 게임을 정복하셨습니다!',
