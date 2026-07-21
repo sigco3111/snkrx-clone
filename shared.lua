@@ -56,6 +56,7 @@ function shared_init()
 
   -- v0.1.3 (한국어화 fork): 영웅 설명/효과 한글 테이블
   lang.character_descriptions_ko = require('lang.character_descriptions_ko')
+  lang.character_effect_descriptions_ko = require('lang.character_effect_descriptions_ko')
 
   function T(key, default)
     local dict = lang.dicts[lang.current] or {}

@@ -182,6 +182,10 @@ return {
   option_reset_video       = '화면 설정 초기화',
   option_music_volume      = '음악 볼륨',
   option_sfx_volume        = '효과음 볼륨',
+  option_screen_shake      = '화면 흔들림: ',
+  option_cooldown_snake    = '뱀 쿨다운: ',
+  option_arrow_snake       = '뱀 화살표: ',
+  option_screen_movement   = '화면 이동: ',
 
   -- ===== 크레딧 (media.lua) =====
   credits_main_dev  = '[bg10]메인 개발: ',

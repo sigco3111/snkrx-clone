@@ -2031,21 +2031,21 @@ function open_options(self)
       b:set_text('[bg10]' .. T('option_screen_shake', 'screen shake: ') .. tostring(state.no_screen_shake and T('no', 'no') or T('yes', 'yes')))
     end}
 
-    self.cooldown_snake_button = Button{group = self.ui, x = gw/2 + 75, y = gh - 100, w = 145, force_update = true, button_text = '[bg10]cooldowns on snake: ' .. tostring(state.cooldown_snake and 'yes' or 'no'), 
-    fg_color = 'bg10', bg_color = 'bg', action = function(b)
-      ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
-      state.cooldown_snake = not state.cooldown_snake
-      b:set_text('cooldowns on snake: ' .. tostring(state.cooldown_snake and 'yes' or 'no'))
-    end}
+    self.cooldown_snake_button = Button{group = self.ui, x = gw/2 + 75, y = gh - 100, w = 145, force_update = true, button_text = '[bg10]' .. T('option_cooldown_snake', 'cooldowns on snake: ') .. tostring(state.cooldown_snake and T('yes', 'yes') or T('no', 'no')),
+        fg_color = 'bg10', bg_color = 'bg', action = function(b)
+          ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
+          state.cooldown_snake = not state.cooldown_snake
+          b:set_text('[bg10]' .. T('option_cooldown_snake', 'cooldowns on snake: ') .. tostring(state.cooldown_snake and T('yes', 'yes') or T('no', 'no')))
+        end}
 
-    self.arrow_snake_button = Button{group = self.ui, x = gw/2 + 65, y = gh - 75, w = 125, force_update = true, button_text = '[bg10]arrow on snake: ' .. tostring(state.arrow_snake and 'yes' or 'no'),
+    self.arrow_snake_button = Button{group = self.ui, x = gw/2 + 65, y = gh - 75, w = 125, force_update = true, button_text = '[bg10]' .. T('option_arrow_snake', 'arrow on snake: ') .. tostring(state.arrow_snake and T('yes', 'yes') or T('no', 'no')),
     fg_color = 'bg10', bg_color = 'bg', action = function(b)
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       state.arrow_snake = not state.arrow_snake
-      b:set_text('arrow on snake: ' .. tostring(state.arrow_snake and 'yes' or 'no'))
+      b:set_text('[bg10]' .. T('option_arrow_snake', 'arrow on snake: ') .. tostring(state.arrow_snake and T('yes', 'yes') or T('no', 'no')))
     end}
 
-    self.screen_movement_button = Button{group = self.ui, x = gw/2 - 69, y = gh - 75, w = 135, force_update = true, button_text = '[bg10]screen movement: ' .. tostring(state.no_screen_movement and 'no' or 'yes'), 
+    self.screen_movement_button = Button{group = self.ui, x = gw/2 - 69, y = gh - 75, w = 135, force_update = true, button_text = '[bg10]' .. T('option_screen_movement', 'screen movement: ') .. tostring(state.no_screen_movement and T('no', 'no') or T('yes', 'yes')),
     fg_color = 'bg10', bg_color = 'bg', action = function(b)
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       state.no_screen_movement = not state.no_screen_movement
@@ -2053,7 +2053,7 @@ function open_options(self)
         camera.x, camera.y = gw/2, gh/2
         camera.r = 0
       end
-      b:set_text('screen movement: ' .. tostring(state.no_screen_movement and 'no' or 'yes'))
+      b:set_text('[bg10]' .. T('option_screen_movement', 'screen movement: ') .. tostring(state.no_screen_movement and T('no', 'no') or T('yes', 'yes')))
     end}
 
     if self:is(MainMenu) then
