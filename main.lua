@@ -1949,6 +1949,7 @@ function open_options(self)
       if sfx.volume > 1 then sfx.volume = 0 end
       state.sfx_volume = sfx.volume
       b:set_text(T('option_sfx_volume', 'sfx volume: ') .. tostring((state.sfx_volume or 0.5)*10))
+      system.save_state()  -- v0.1.20
     end,
     action_2 = function(b)
       ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
@@ -1960,6 +1961,7 @@ function open_options(self)
       if sfx.volume < 0 then sfx.volume = 1 end
       state.sfx_volume = sfx.volume
       b:set_text(T('option_sfx_volume', 'sfx volume: ') .. tostring((state.sfx_volume or 0.5)*10))
+      system.save_state()  -- v0.1.20
     end}
 
     self.music_button = Button{group = self.ui, x = gw/2 + 48, y = gh - 175, force_update = true, button_text = T('option_music_volume', 'music volume: ') .. tostring((state.music_volume or 0.5)*10), fg_color = 'bg10', bg_color = 'bg',
@@ -1972,6 +1974,7 @@ function open_options(self)
       if music.volume > 1 then music.volume = 0 end
       state.music_volume = music.volume
       b:set_text(T('option_music_volume', 'music volume: ') .. tostring((state.music_volume or 0.5)*10))
+      system.save_state()  -- v0.1.20: 옵션 변경 시 저장
     end,
     action_2 = function(b)
       ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
@@ -1983,6 +1986,7 @@ function open_options(self)
       if music.volume < 0 then music.volume = 1 end
       state.music_volume = music.volume
       b:set_text(T('option_music_volume', 'music volume: ') .. tostring((state.music_volume or 0.5)*10))
+      system.save_state()  -- v0.1.20: 옵션 변경 시 저장
     end}
 
     self.video_button_1 = Button{group = self.ui, x = gw/2 - 136, y = gh - 125, force_update = true, button_text = T('option_window_size_minus', 'window size-'), fg_color = 'bg10', bg_color = 'bg', action = function()
@@ -1992,6 +1996,7 @@ function open_options(self)
         love.window.setMode(480*sx, 270*sy)
         state.sx, state.sy = sx, sy
         state.fullscreen = false
+        system.save_state()  -- v0.1.20
       end
     end}
 
@@ -2001,6 +2006,7 @@ function open_options(self)
       love.window.setMode(480*sx, 270*sy)
       state.sx, state.sy = sx, sy
       state.fullscreen = false
+      system.save_state()  -- v0.1.20
     end}
 
     self.video_button_3 = Button{group = self.ui, x = gw/2 + 29, y = gh - 125, force_update = true, button_text = T('option_fullscreen', 'fullscreen'), fg_color = 'bg10', bg_color = 'bg', action = function()
@@ -2010,18 +2016,20 @@ function open_options(self)
       sx, sy = window_width/480, window_height/270
       state.sx, state.sy = sx, sy
       ww, wh = window_width, window_height
-      love.window.setMode(window_width, window_height)
+      state.fullscreen = true  -- v0.1.20: 풀스크린 상태 저장
+      love.window.setMode(window_width, window_height, {fullscreen = true})  -- v0.1.20: 풀스크린으로 setMode
+      system.save_state()  -- v0.1.20
     end}
 
     self.video_button_4 = Button{group = self.ui, x = gw/2 + 129, y = gh - 125, force_update = true, button_text = T('option_reset_video', 'reset video settings'), fg_color = 'bg10', bg_color = 'bg', action = function()
       local _, _, flags = love.window.getMode()
       local window_width, window_height = love.window.getDesktopDimensions(flags.display)
       sx, sy = window_width/480, window_height/270
-      ww, wh = window_width, window_height
       state.sx, state.sy = sx, sy
-      state.fullscreen = false
+      state.fullscreen = true  -- 원본 동작: reset = fullscreen
       ww, wh = window_width, window_height
       love.window.setMode(window_width, window_height)
+      system.save_state()  -- v0.1.20
     end}
 
     self.screen_shake_button = Button{group = self.ui, x = gw/2 - 57, y = gh - 100, w = 110, force_update = true, button_text = '[bg10]' .. T('option_screen_shake', 'screen shake: ') .. tostring(state.no_screen_shake and T('no', 'no') or T('yes', 'yes')),
@@ -2029,6 +2037,7 @@ function open_options(self)
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       state.no_screen_shake = not state.no_screen_shake
       b:set_text('[bg10]' .. T('option_screen_shake', 'screen shake: ') .. tostring(state.no_screen_shake and T('no', 'no') or T('yes', 'yes')))
+      system.save_state()  -- v0.1.20
     end}
 
     self.cooldown_snake_button = Button{group = self.ui, x = gw/2 + 75, y = gh - 100, w = 145, force_update = true, button_text = '[bg10]' .. T('option_cooldown_snake', 'cooldowns on snake: ') .. tostring(state.cooldown_snake and T('yes', 'yes') or T('no', 'no')),
@@ -2036,6 +2045,7 @@ function open_options(self)
           ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
           state.cooldown_snake = not state.cooldown_snake
           b:set_text('[bg10]' .. T('option_cooldown_snake', 'cooldowns on snake: ') .. tostring(state.cooldown_snake and T('yes', 'yes') or T('no', 'no')))
+          system.save_state()  -- v0.1.20
         end}
 
     self.arrow_snake_button = Button{group = self.ui, x = gw/2 + 65, y = gh - 75, w = 125, force_update = true, button_text = '[bg10]' .. T('option_arrow_snake', 'arrow on snake: ') .. tostring(state.arrow_snake and T('yes', 'yes') or T('no', 'no')),
@@ -2043,6 +2053,7 @@ function open_options(self)
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       state.arrow_snake = not state.arrow_snake
       b:set_text('[bg10]' .. T('option_arrow_snake', 'arrow on snake: ') .. tostring(state.arrow_snake and T('yes', 'yes') or T('no', 'no')))
+      system.save_state()  -- v0.1.20
     end}
 
     self.screen_movement_button = Button{group = self.ui, x = gw/2 - 69, y = gh - 75, w = 135, force_update = true, button_text = '[bg10]' .. T('option_screen_movement', 'screen movement: ') .. tostring(state.no_screen_movement and T('no', 'no') or T('yes', 'yes')),
@@ -2054,6 +2065,7 @@ function open_options(self)
         camera.r = 0
       end
       b:set_text('[bg10]' .. T('option_screen_movement', 'screen movement: ') .. tostring(state.no_screen_movement and T('no', 'no') or T('yes', 'yes')))
+      system.save_state()  -- v0.1.20
     end}
 
     if self:is(MainMenu) then

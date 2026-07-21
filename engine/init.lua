@@ -67,19 +67,42 @@ function engine_run(config)
     if config.anisotropy ~= 'max' then anisotropy = config.anisotropy end
 
     gw, gh = config.game_width or 480, config.game_height or 270
-    -- v0.1 (한국어화 fork): sx/sy를 항상 config.window_width 기준 비율로 계산.
-    -- 이전에는 state.sx가 있으면 그 값으로 덮어써서 윈도우가 작아졌음.
-    sx, sy = window_width/(config.game_width or 480), window_height/(config.game_height or 270)
+
+    -- v0.1.21: state.sx/sy가 가드 범위(0.5~3) 안이면 사용 → 사용자가 마지막에 설정한 창 크기 복원.
+    -- 단, 풀스크린 모드면 state.sx/sy는 무시하고 데스크톱 크기 사용.
+    -- 풀스크린 → 창 모드 전환 시에만 state.sx/sy 적용.
+    local use_state_sx = false
+    if state.fullscreen == true then
+      -- 풀스크린 모드: 데스크톱 크기 그대로
+      sx, sy = window_width/(config.game_width or 480), window_height/(config.game_height or 270)
+      use_state_sx = true  -- state.sx 덮어쓰지 않음 (다음 시작 시에도 풀스크린이면)
+    elseif config.window_width == 'max' or config.window_width == 'half' or type(config.window_width) == 'number' then
+      -- config가 명시적 값이면 config 우선
+      sx, sy = window_width/(config.game_width or 480), window_height/(config.game_height or 270)
+    elseif state.sx and state.sy and state.sx >= 0.5 and state.sx <= 3 and state.sy >= 0.5 and state.sy <= 3 then
+      -- state에 저장된 sx/sy가 가드 범위 내 → 사용
+      sx, sy = state.sx, state.sy
+      window_width = math.floor(sx * (config.game_width or 480))
+      window_height = math.floor(sy * (config.game_height or 270))
+      use_state_sx = true
+    else
+      -- 기본값: config 기반
+      sx, sy = window_width/(config.game_width or 480), window_height/(config.game_height or 270)
+    end
     ww, wh = window_width, window_height
 
-    -- v0.1 (한국어화 fork): state.sx/sy는 항상 새로 계산된 값으로 덮어쓰기.
-    -- 이전 세션의 sx/sy 값에 의존하지 않고, 매번 config 기반 정확한 값으로 동기화.
-    state.sx, state.sy = sx, sy
+    -- v0.1.21: state.fullscreen이 true면 풀스크린 모드
+    local fullscreen_mode = state.fullscreen == true
+
+    -- v0.1.21: state.sx/sy 덮어쓰기 (가드 범위 내였으면 보존)
+    if not use_state_sx then
+      state.sx, state.sy = sx, sy
+    end
     love.window.setMode(window_width, window_height, {
       vsync = config.vsync,
       msaa = msaa or 0,
       display = 1,
-      fullscreen = false,
+      fullscreen = fullscreen_mode,
       borderless = false,
       resizable = true,
     })
