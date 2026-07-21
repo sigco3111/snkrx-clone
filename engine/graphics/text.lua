@@ -93,7 +93,13 @@ function Text:draw(x, y, r, sx, sy)
         end
       end
       graphics.push(x, y, r, sx, sy)
-      graphics.print(c.character, line.font, x + c.x - self.w/2, y + c.y - self.h/2, c.r or 0, c.sx or 1, c.sy or c.sx or 1, c.ox or 0, c.oy or 0)
+      local active_font
+      if line.font.get_font_for_text then
+        active_font = line.font:get_font_for_text(c.character)
+      else
+        active_font = line.font.font
+      end
+      love.graphics.print(c.character, active_font, x + c.x - self.w/2, y + c.y - self.h/2, c.r or 0, c.sx or 1, c.sy or c.sx or 1, c.ox or 0, c.oy or 0)
       graphics.pop()
       graphics.set_color(self.white)
     end
@@ -104,7 +110,13 @@ end
 function Text:format_text()
   self.w = 0
   for i, line in ipairs(self.lines) do
-    local line_width = math.max(line.font:get_text_width(line.raw_text), line.alignment_width or 0)
+    local active_font
+    if line.font.get_font_for_text then
+      active_font = line.font:get_font_for_text(line.raw_text)
+    else
+      active_font = line.font.font
+    end
+    local line_width = math.max(active_font:getWidth(line.raw_text), line.alignment_width or 0)
     if line_width > self.w then
       self.w = line_width
     end
@@ -118,9 +130,15 @@ function Text:format_text()
       c.y = y
       c.sx = line.sx or c.sx or 1
       c.sy = line.sy or c.sy or 1
-      c.w = line.font:get_text_width(c.character)
+      local cf
+      if line.font.get_font_for_text then
+        cf = line.font:get_font_for_text(c.character)
+      else
+        cf = line.font.font
+      end
+      c.w = cf:getWidth(c.character)
       c.h = line.font.h
-      x = x + line.font:get_text_width(c.character)
+      x = x + cf:getWidth(c.character)
     end
     y = y + h
     x = 0
@@ -185,10 +203,25 @@ function Text:parse(text_data)
   for _, line in ipairs(text_data) do
     line.characters = {}
     local current_tags = nil
-    for i = 1, #line.text do
-      local c = line.text:sub(i, i)
+    -- v0.1 (한국어화 fork): UTF-8 character 단위로 반복 (바이트 단위가 아님)
+    -- 원본은 `for i = 1, #line.text do c = line.text:sub(i, i)`로 바이트 1개를 c.character에 넣음.
+    -- 한글/일본어/중국어는 UTF-8에서 3바이트이므로 sub(i, i)는 깨진 바이트를 반환 →
+    -- getWidth()에서 "UTF-8 decoding error: Not enough space" 에러 발생.
+    -- 해결: lead byte에서 continuation 바이트 수를 계산해서 sub(i, i + cont - 1)로 한 글자씩 추출.
+    local i = 1
+    while i <= #line.text do
+      local b = line.text:byte(i)
+      local cont = 1
+      if b >= 0xF0 then cont = 4      -- 4-byte sequence (CJK Extension B+)
+      elseif b >= 0xE0 then cont = 3  -- 3-byte sequence (한글, CJK, 일본어)
+      elseif b >= 0xC0 then cont = 2  -- 2-byte sequence (Latin extended, 부호)
+      elseif b >= 0x80 then cont = 1  -- continuation byte (orphan — should not happen in valid UTF-8)
+      end
+      local c = line.text:sub(i, i + cont - 1)
       local inside_tags = false
       for _, tag in ipairs(line.tags) do
+        -- tag positions are 1-indexed byte positions matching original parser
+        -- Since we now consume multiple bytes per char, we treat each character as occupying its lead-byte position
         if i >= tag.i and i <= tag.j then
           inside_tags = true
           current_tags = tag.tags
@@ -198,6 +231,7 @@ function Text:parse(text_data)
       if not inside_tags then
         table.insert(line.characters, {character = c, visible = true, tags = current_tags or {}})
       end
+      i = i + cont
     end
   end
 

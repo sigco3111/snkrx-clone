@@ -41,6 +41,26 @@ function shared_init()
 
   fat_font = Font('FatPixelFont', 8)
   pixul_font = Font('PixulBrush', 8)
+
+  -- ====================================================================
+  -- 한국어화 모듈 (v0.1) — T() 함수 + ko.lua 모드팩 로더
+  -- T('key', default) → ko.lua[lang.current][key] 있으면 반환, 없으면 default
+  -- lang.current = 'ko'/'en' 변경만으로 전체 UI 언어 전환
+  -- ====================================================================
+  lang = lang or {}
+  lang.current = 'ko'  -- 기본값 한국어
+  lang.dicts = {}
+  lang.dicts.en = {}   -- 영어 = 원본 (모든 키의 default가 영어)
+  lang.dicts.ko = require('lang.ko')
+  lang.fallback = 'en'
+
+  function T(key, default)
+    local dict = lang.dicts[lang.current] or {}
+    local fb = lang.dicts[lang.fallback] or {}
+    if dict[key] ~= nil then return dict[key] end
+    if fb[key] ~= nil then return fb[key] end
+    return default or key
+  end
   background_canvas = Canvas(gw, gh)
   main_canvas = Canvas(gw, gh, {stencil = true})
   shadow_canvas = Canvas(gw, gh)

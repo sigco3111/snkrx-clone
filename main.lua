@@ -2138,7 +2138,14 @@ end
 function love.run()
   return engine_run({
     game_name = 'SNKRX',
-    window_width = 'max',
-    window_height = 'max',
+    -- v0.1 (한국어화 fork): SNKRX는 좌표계를 480x270으로 하드코딩 가정 (main.lua의
+    -- setMode(480*sx, 270*sy) 호출들). game_width/height는 480x270 그대로 두고,
+    -- window_width/height만 키워서 sx = window/480 비율로 오브젝트가 비례 확대되도록.
+    -- 1280x720 윈도우 → sx = 1280/480 ≈ 2.67 → 오브젝트 2.67배 확대 (원본 960x540의 1.33배).
+    -- 1280x720은 비표준이라 macOS 풀스크린화 회피.
+    window_width = 1280,
+    window_height = 720,
+    game_width = 480,
+    game_height = 270,
   })
 end

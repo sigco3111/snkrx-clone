@@ -51,8 +51,14 @@ function engine_run(config)
 
     local _, _, flags = love.window.getMode()
     local window_width, window_height = love.window.getDesktopDimensions(flags.display)
-    if config.window_width ~= 'max' then window_width = config.window_width end
-    if config.window_height ~= 'max' then window_height = config.window_height end
+
+    -- v0.1 (한국어화 fork): 'half' 모드 추가 — 실제 화면의 절반 크기로 윈도우 생성.
+    -- 'max' 체크보다 먼저 처리해야 함 (안 그러면 'half' 문자열이 window_width에 박힘).
+    if config.window_width == 'half' then window_width = math.floor(window_width / 2) end
+    if config.window_height == 'half' then window_height = math.floor(window_height / 2) end
+
+    if config.window_width ~= 'max' and config.window_width ~= 'half' then window_width = config.window_width end
+    if config.window_height ~= 'max' and config.window_height ~= 'half' then window_height = config.window_height end
 
     local limits = love.graphics.getSystemLimits()
     local anisotropy = limits.anisotropy
@@ -61,16 +67,22 @@ function engine_run(config)
     if config.anisotropy ~= 'max' then anisotropy = config.anisotropy end
 
     gw, gh = config.game_width or 480, config.game_height or 270
+    -- v0.1 (한국어화 fork): sx/sy를 항상 config.window_width 기준 비율로 계산.
+    -- 이전에는 state.sx가 있으면 그 값으로 덮어써서 윈도우가 작아졌음.
     sx, sy = window_width/(config.game_width or 480), window_height/(config.game_height or 270)
     ww, wh = window_width, window_height
 
-    if state.sx and state.sy then
-      sx, sy = state.sx, state.sy
-      love.window.setMode(state.sx*gw, state.sy*gh, {vsync = config.vsync, msaa = msaa or 0, display = config.display})
-    else
-      state.sx, state.sy = sx, sy
-      love.window.setMode(window_width, window_height, {vsync = config.vsync, msaa = msaa or 0, display = config.display})
-    end
+    -- v0.1 (한국어화 fork): state.sx/sy는 항상 새로 계산된 값으로 덮어쓰기.
+    -- 이전 세션의 sx/sy 값에 의존하지 않고, 매번 config 기반 정확한 값으로 동기화.
+    state.sx, state.sy = sx, sy
+    love.window.setMode(window_width, window_height, {
+      vsync = config.vsync,
+      msaa = msaa or 0,
+      display = 1,
+      fullscreen = false,
+      borderless = false,
+      resizable = true,
+    })
     love.window.setTitle(config.game_name)
 
   else

@@ -59,19 +59,36 @@ end
 
 
 -- Prints text to the screen, alternative to using a Text object.
+-- v0.1: 한글/일본어/중국어 등 CJK 문자가 감지되면 font 객체의 ko_font로 자동 전환.
 function graphics.print(text, font, x, y, r, sx, sy, ox, oy, color)
   local _r, g, b, a = love.graphics.getColor()
   if color then love.graphics.setColor(color.r, color.g, color.b, color.a) end
-  love.graphics.print(text, font.font, x, y, r or 0, sx or 1, sy or 1, ox or 0, oy or 0)
+  local active_font
+  if font.get_font_for_text then
+    active_font = font:get_font_for_text(text)
+  else
+    active_font = font.font
+  end
+  love.graphics.print(text, active_font, x, y, r or 0, sx or 1, sy or 1, ox or 0, oy or 0)
   if color then love.graphics.setColor(_r, g, b, a) end
 end
 
 
 -- Prints text to the screen centered on x, y, alternative to using a Text object.
+-- v0.1: CJK 자동 fallback.
 function graphics.print_centered(text, font, x, y, r, sx, sy, ox, oy, color)
   local _r, g, b, a = love.graphics.getColor()
   if color then love.graphics.setColor(color.r, color.g, color.b, color.a) end
-  love.graphics.print(text, font.font, x, y, r or 0, sx or 1, sy or 1, (ox or 0) + font:get_text_width(text)/2, (oy or 0) + font.h/2)
+  local active_font
+  if font.get_font_for_text then
+    active_font = font:get_font_for_text(text)
+  else
+    active_font = font.font
+  end
+  -- 너비도 CJK 폰트로 계산
+  local active_w = active_font:getWidth(text)
+  local active_h = active_font:getHeight()
+  love.graphics.print(text, active_font, x, y, r or 0, sx or 1, sy or 1, (ox or 0) + active_w/2, (oy or 0) + active_h/2)
   if color then love.graphics.setColor(_r, g, b, a) end
 end
 

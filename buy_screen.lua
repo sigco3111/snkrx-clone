@@ -65,11 +65,11 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
   self:set_party_and_sets()
   self:set_items()
 
-  self.shop_text = Text({{text = '[wavy_mid, fg]shop [fg]- gold: [yellow]' .. gold, font = pixul_font, alignment = 'center'}}, global_text_tags)
-  self.party_text = Text({{text = '[wavy_mid, fg]party ' .. tostring(#units) .. '/' .. tostring(max_units), font = pixul_font, alignment = 'center'}}, global_text_tags)
-  self.sets_text = Text({{text = '[wavy_mid, fg]classes', font = pixul_font, alignment = 'center'}}, global_text_tags)
-  self.items_text = Text({{text = '[wavy_mid, fg]items', font = pixul_font, alignment = 'center'}}, global_text_tags)
-  self.ng_text = Text({{text = '[fg]NG+' .. current_new_game_plus, font = pixul_font, alignment = 'center'}}, global_text_tags)
+  self.shop_text = Text({{text = '[wavy_mid, fg]' .. T('shop_label', 'shop') .. ' [fg]- ' .. T('gold_label', '[fg, nudge_down]gold: [yellow, nudge_down]') .. gold, font = pixul_font, alignment = 'center'}}, global_text_tags)
+  self.party_text = Text({{text = '[wavy_mid, fg]' .. T('party_label', 'party') .. ' ' .. tostring(#units) .. '/' .. tostring(max_units), font = pixul_font, alignment = 'center'}}, global_text_tags)
+  self.sets_text = Text({{text = '[wavy_mid, fg]' .. T('classes_label', 'classes'), font = pixul_font, alignment = 'center'}}, global_text_tags)
+  self.items_text = Text({{text = '[wavy_mid, fg]' .. T('items_label', 'items'), font = pixul_font, alignment = 'center'}}, global_text_tags)
+  self.ng_text = Text({{text = '[fg]' .. T('ng_plus', 'NG+') .. current_new_game_plus, font = pixul_font, alignment = 'center'}}, global_text_tags)
   local get_elite_str = function(lvl)
     if (lvl-(25*self.loop)) % 6 == 0 or lvl % 25 == 0 then return ' (elite)'
     elseif (lvl-(25*self.loop)) % 3 == 0 then return ' (hard)'
@@ -82,17 +82,17 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
   LevelButton{group = self.main, x = gw/2, y = 18, parent = self}
   self.tutorial_button = Button{group = self.main, x = gw/2 + 129, y = 18, button_text = '?', fg_color = 'bg10', bg_color = 'bg', action = function()
     self.in_tutorial = true
-    self.title_text = Text2{group = self.tutorial, x = gw/2, y = 35, lines = {{text = '[fg]WELCOME TO SNKRX!', font = fat_font, alignment = 'center'}}}
+    self.title_text = Text2{group = self.tutorial, x = gw/2, y = 35, lines = {{text = '[fg]' .. T('welcome_snkrx', 'WELCOME TO SNKRX!'), font = fat_font, alignment = 'center'}}}
     self.tutorial_text = Text2{group = self.tutorial, x = 228, y = 160, lines = {
-      {text = '[fg]You control a snake of multiple heroes that auto-attack nearby enemies.', font = pixul_font, height_multiplier = 1.2},
-      {text = '[fg]You can steer the snake left or right by pressing [yellow]A/D[fg] or [yellow]left/right arrows[fg].', font = pixul_font, height_multiplier = 2.2},
-      {text = '[fg]Combine the same heroes to level them up:', font = pixul_font, height_multiplier = 1.2},
-      {text = '[fg]At [yellow]Lv.3[fg] heroes unlock special effects.', font = pixul_font, height_multiplier = 2.2},
-      {text = '[fg]Hire heroes of the same classes to unlock class passives:', font = pixul_font, height_multiplier = 1.2},
-      {text = '[fg]Each hero can have between [yellow]1 to 3[fg] classes.', font = pixul_font, height_multiplier = 2.2},
-      {text = '[fg]You gain [yellow]1 interest per 5 gold[fg], up to a maximum of 5.', font = pixul_font, height_multiplier = 1.2},
-      {text = "[fg]This means that saving above [yellow]25 gold[fg] doesn't yield more interest.", font = pixul_font, height_multiplier = 2.2},
-      {text = "[yellow, wavy_mid]Good luck!", font = pixul_font, height_multiplier = 2.2, alignment = 'center'},
+      {text = '[fg]' .. T('welcome_desc1', 'You control a snake of multiple heroes that auto-attack nearby enemies.'), font = pixul_font, height_multiplier = 1.2},
+      {text = '[fg]' .. T('welcome_desc2', 'You can steer the snake left or right by pressing [yellow]A/D[fg] or [yellow]left/right arrows[fg].'), font = pixul_font, height_multiplier = 2.2},
+      {text = '[fg]' .. T('welcome_desc3', 'Combine the same heroes to level them up:'), font = pixul_font, height_multiplier = 1.2},
+      {text = '[fg]' .. T('welcome_desc6', 'At [yellow]Lv.3[fg] heroes unlock special effects.'), font = pixul_font, height_multiplier = 2.2},
+      {text = '[fg]' .. T('welcome_desc5', 'Hire heroes of the same classes to unlock class passives:'), font = pixul_font, height_multiplier = 1.2},
+      {text = '[fg]' .. T('welcome_desc4', 'Each hero can have between [yellow]1 to 3[fg] classes.'), font = pixul_font, height_multiplier = 2.2},
+      {text = '[fg]' .. T('welcome_desc7', 'You gain [yellow]1 interest per 5 gold[fg], up to a maximum of 5.'), font = pixul_font, height_multiplier = 1.2},
+      {text = "[fg]" .. T('welcome_desc8', "This means that saving above [yellow]25 gold[fg] doesn't yield more interest."), font = pixul_font, height_multiplier = 2.2},
+      {text = "[yellow, wavy_mid]" .. T('welcome_luck', 'Good luck!'), font = pixul_font, height_multiplier = 2.2, alignment = 'center'},
     }}
 
     self.tutorial_cards = {}
