@@ -103,7 +103,7 @@ function Arena:on_enter(from, level, loop, units, passives, shop_level, shop_xp,
   end
 
   if self.level == 1000 then
-    self.level_1000_text = Text2{group = self.ui, x = gw/2, y = gh/2, lines = {{text = '[fg, wavy_mid]SNKRX', font = fat_font, alignment = 'center'}}}
+    self.level_1000_text = Text2{group = self.ui, x = gw/2, y = gh/2, lines = {{text = '[fg, wavy_mid]' .. T('game_over', 'SNKRX'), font = fat_font, alignment = 'center'}}}
   
   elseif (self.level - (25*self.loop)) % 6 == 0 or self.level % 25 == 0 then
     self.boss_level = true
@@ -442,7 +442,7 @@ function Arena:quit()
       trigger:tween(1, _G, {slow_amount = 0}, math.linear, function() slow_amount = 0 end, 'slow_amount')
       trigger:tween(1, _G, {music_slow_amount = 0}, math.linear, function() music_slow_amount = 0 end, 'music_slow_amount')
       trigger:tween(4, camera, {x = gw/2, y = gh/2, r = 0}, math.linear, function() camera.x, camera.y, camera.r = gw/2, gh/2, 0 end)
-      self.win_text = Text2{group = self.ui, x = gw/2 + 40, y = gh/2 - 69, force_update = true, lines = {{text = '[wavy_mid, cbyc2]congratulations!', font = fat_font, alignment = 'center'}}}
+      self.win_text = Text2{group = self.ui, x = gw/2 + 40, y = gh/2 - 69, force_update = true, lines = {{text = '[wavy_mid, cbyc2]' .. T('congratulations', 'congratulations!'), font = fat_font, alignment = 'center'}}}
       trigger:after(2.5, function()
         local open_url = function(b, url)
           ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
@@ -480,10 +480,10 @@ function Arena:quit()
             {text = "[wavy_mid, yellow]thanks for playing!", font = pixul_font, alignment = 'center'},
           }}
           SteamFollowButton{group = self.ui, x = gw/2 + 40, y = gh/2 + 58, force_update = true}
-          Button{group = self.ui, x = gw - 40, y = gh - 44, force_update = true, button_text = 'credits', fg_color = 'bg10', bg_color = 'bg', action = function() self:create_credits() end}
-          Button{group = self.ui, x = gw - 39, y = gh - 20, force_update = true, button_text = '  loop  ', fg_color = 'bg10', bg_color = 'bg', action = function() self:endless() end}
+          Button{group = self.ui, x = gw - 40, y = gh - 44, force_update = true, button_text = T('credits', 'credits'), fg_color = 'bg10', bg_color = 'bg', action = function() self:create_credits() end}
+          Button{group = self.ui, x = gw - 39, y = gh - 20, force_update = true, button_text = T('loop_btn', '  loop  '), fg_color = 'bg10', bg_color = 'bg', action = function() self:endless() end}
           self.try_loop_text = Text2{group = self.ui, x = gw - 144, y = gh - 20, force_update = true, lines = {
-            {text = '[bg10]continue run (+difficulty):', font = pixul_font},
+            {text = '[bg10]' .. T('continue_run_diff', 'continue run (+difficulty):'), font = pixul_font},
           }}
           Button{group = self.ui, x = gw/2 - 50 + 40, y = gh/2 + 12, force_update = true, button_text = 'nimble quest', fg_color = 'bluem5', bg_color = 'blue', action = function(b) open_url(b, 'https://store.steampowered.com/app/259780/Nimble_Quest/') end}
           Button{group = self.ui, x = gw/2 + 50 + 40, y = gh/2 + 12, force_update = true, button_text = 'dota underlords', fg_color = 'bluem5', bg_color = 'blue', action = function(b) open_url(b, 'https://store.steampowered.com/app/1046930/Dota_Underlords/') end}
@@ -506,14 +506,14 @@ function Arena:quit()
           }}
           ]]--
           SteamFollowButton{group = self.ui, x = gw/2 + 40, y = gh/2 - 10, force_update = true}
-          Button{group = self.ui, x = gw/2 + 40, y = gh/2 + 33, force_update = true, button_text = 'buy the soundtrack!', fg_color = 'greenm5', bg_color = 'green', action = function(b) open_url(b, 'https://kubbimusic.com/album/ember') end}
-          Button{group = self.ui, x = gw - 40, y = gh - 44, force_update = true, button_text = '  loop  ', fg_color = 'bg10', bg_color = 'bg', action = function() self:endless() end}
+          Button{group = self.ui, x = gw/2 + 40, y = gh/2 + 33, force_update = true, button_text = T('buy_soundtrack', 'buy the soundtrack!'), fg_color = 'greenm5', bg_color = 'green', action = function(b) open_url(b, 'https://kubbimusic.com/album/ember') end}
+          Button{group = self.ui, x = gw - 40, y = gh - 44, force_update = true, button_text = T('loop_btn', '  loop  '), fg_color = 'bg10', bg_color = 'bg', action = function() self:endless() end}
           RestartButton{group = self.ui, x = gw - 40, y = gh - 20, force_update = true}
           self.try_loop_text = Text2{group = self.ui, x = gw - 200, y = gh - 44, force_update = true, lines = {
-            {text = '[bg10]continue run (+difficulty, +1 max snake size):', font = pixul_font},
+            {text = '[bg10]' .. T('continue_run_diff_max', 'continue run (+difficulty, +1 max snake size):'), font = pixul_font},
           }}
           self.try_ng_text = Text2{group = self.ui, x = gw - 187, y = gh - 20, force_update = true, lines = {
-            {text = '[bg10]new run (+difficulty, +1 max snake size):', font = pixul_font},
+            {text = '[bg10]' .. T('new_run_diff_max', 'new run (+difficulty, +1 max snake size):'), font = pixul_font},
           }}
           self.credits_button = Button{group = self.ui, x = gw - 40, y = gh - 68, force_update = true, button_text = 'credits', fg_color = 'bg10', bg_color = 'bg', action = function() self:create_credits() end}
         end
@@ -838,9 +838,9 @@ function Arena:die()
         ItemCard{group = self.ui, x = 120 + (i-1)*30, y = 30, w = 30, h = 45, sx = 0.75, sy = 0.75, force_update = true, passive = passive.passive , level = passive.level, xp = passive.xp, parent = self}
       end
       self.death_info_text = Text2{group = self.ui, x = gw/2, y = gh/2, sx = 0.7, sy = 0.7, lines = {
-        {text = '[wavy_mid, fg]level reached: [wavy_mid, yellow]' .. self.level, font = fat_font, alignment = 'center'},
+        {text = '[wavy_mid, fg]' .. T('level_reached', 'level reached: ') .. '[wavy_mid, yellow]' .. self.level, font = fat_font, alignment = 'center'},
       }}
-      self.restart_button = Button{group = self.ui, x = gw/2, y = gh/2 + 24, force_update = true, button_text = 'restart run (r)', fg_color = 'bg10', bg_color = 'bg', action = function(b)
+      self.restart_button = Button{group = self.ui, x = gw/2, y = gh/2 + 24, force_update = true, button_text = T('restart_run_r', 'restart run (r)'), fg_color = 'bg10', bg_color = 'bg', action = function(b)
         self.transitioning = true
         ui_transition2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
         ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}

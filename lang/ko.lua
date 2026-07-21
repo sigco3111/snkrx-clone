@@ -17,6 +17,15 @@ return {
   starting          = '시작 중...',
   restarting        = '재시작 중...',
   play_now          = '지금 플레이!',
+  game_over         = '게임 오버',
+  congratulations   = '축하합니다!',
+  credits           = '크레딧',
+  loop_btn          = '  무한 루프  ',
+  level_reached     = '도달한 레벨: ',
+  restart_run_r     = '런 재시작 (R)',
+  continue_run_diff = '런 계속하기 (+난이도):',
+  continue_run_diff_max = '런 계속하기 (+난이도, +최대 뱀 길이 +1):',
+  new_run_diff_max  = '새 런 (+난이도, +최대 뱀 길이 +1):',
 
   -- ===== 일시정지 / NG+ (main.lua) =====
   paused            = '일시정지',

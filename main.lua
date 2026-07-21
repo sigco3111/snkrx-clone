@@ -1847,12 +1847,12 @@ function open_options(self)
     self.paused = true
 
     if self:is(Arena) then
-      self.paused_t1 = Text2{group = self.ui, x = gw/2, y = gh/2 - 108, sx = 0.6, sy = 0.6, lines = {{text = '[bg10]<-, a or m1       ->, d or m2', font = fat_font, alignment = 'center'}}}
-      self.paused_t2 = Text2{group = self.ui, x = gw/2, y = gh/2 - 92, lines = {{text = '[bg10]turn left                                            turn right', font = pixul_font, alignment = 'center'}}}
+      self.paused_t1 = Text2{group = self.ui, x = gw/2, y = gh/2 - 108, sx = 0.6, sy = 0.6, lines = {{text = '[bg10]' .. T('controls_move', '<-, a or m1       ->, d or m2'), font = fat_font, alignment = 'center'}}}
+      self.paused_t2 = Text2{group = self.ui, x = gw/2, y = gh/2 - 92, lines = {{text = '[bg10]' .. T('controls_turn', 'turn left                                            turn right'), font = pixul_font, alignment = 'center'}}}
     end
 
     if self:is(MainMenu) then
-      self.ng_t = Text2{group = self.ui, x = gw/2 + 63, y = gh - 50, lines = {{text = '[bg10]current: ' .. current_new_game_plus, font = pixul_font, alignment = 'center'}}}
+      self.ng_t = Text2{group = self.ui, x = gw/2 + 63, y = gh - 50, lines = {{text = '[bg10]' .. T('current_ng', 'current: ') .. current_new_game_plus, font = pixul_font, alignment = 'center'}}}
     end
 
     self.resume_button = Button{group = self.ui, x = gw/2, y = gh - 225, force_update = true, button_text = self:is(MainMenu) and 'main menu (esc)' or 'resume game (esc)', fg_color = 'bg10', bg_color = 'bg', action = function(b)
@@ -1939,7 +1939,7 @@ function open_options(self)
       b:set_text('run timer: ' .. tostring(state.run_timer and 'yes' or 'no'))
     end}
 
-    self.sfx_button = Button{group = self.ui, x = gw/2 - 46, y = gh - 175, force_update = true, button_text = 'sfx volume: ' .. tostring((state.sfx_volume or 0.5)*10), fg_color = 'bg10', bg_color = 'bg',
+    self.sfx_button = Button{group = self.ui, x = gw/2 - 46, y = gh - 175, force_update = true, button_text = T('option_sfx_volume', 'sfx volume: ') .. tostring((state.sfx_volume or 0.5)*10), fg_color = 'bg10', bg_color = 'bg',
     action = function(b)
       ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       b.spring:pull(0.2, 200, 10)
@@ -1948,7 +1948,7 @@ function open_options(self)
       sfx.volume = sfx.volume + 0.1
       if sfx.volume > 1 then sfx.volume = 0 end
       state.sfx_volume = sfx.volume
-      b:set_text('sfx volume: ' .. tostring((state.sfx_volume or 0.5)*10))
+      b:set_text(T('option_sfx_volume', 'sfx volume: ') .. tostring((state.sfx_volume or 0.5)*10))
     end,
     action_2 = function(b)
       ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
@@ -1959,10 +1959,10 @@ function open_options(self)
       if math.abs(sfx.volume) < 0.001 and sfx.volume > 0 then sfx.volume = 0 end
       if sfx.volume < 0 then sfx.volume = 1 end
       state.sfx_volume = sfx.volume
-      b:set_text('sfx volume: ' .. tostring((state.sfx_volume or 0.5)*10))
+      b:set_text(T('option_sfx_volume', 'sfx volume: ') .. tostring((state.sfx_volume or 0.5)*10))
     end}
 
-    self.music_button = Button{group = self.ui, x = gw/2 + 48, y = gh - 175, force_update = true, button_text = 'music volume: ' .. tostring((state.music_volume or 0.5)*10), fg_color = 'bg10', bg_color = 'bg',
+    self.music_button = Button{group = self.ui, x = gw/2 + 48, y = gh - 175, force_update = true, button_text = T('option_music_volume', 'music volume: ') .. tostring((state.music_volume or 0.5)*10), fg_color = 'bg10', bg_color = 'bg',
     action = function(b)
       ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       b.spring:pull(0.2, 200, 10)
@@ -1971,7 +1971,7 @@ function open_options(self)
       music.volume = music.volume + 0.1
       if music.volume > 1 then music.volume = 0 end
       state.music_volume = music.volume
-      b:set_text('music volume: ' .. tostring((state.music_volume or 0.5)*10))
+      b:set_text(T('option_music_volume', 'music volume: ') .. tostring((state.music_volume or 0.5)*10))
     end,
     action_2 = function(b)
       ui_switch2:play{pitch = random:float(0.95, 1.05), volume = 0.5}
@@ -1982,7 +1982,7 @@ function open_options(self)
       if math.abs(music.volume) < 0.001 and music.volume > 0 then music.volume = 0 end
       if music.volume < 0 then music.volume = 1 end
       state.music_volume = music.volume
-      b:set_text('music volume: ' .. tostring((state.music_volume or 0.5)*10))
+      b:set_text(T('option_music_volume', 'music volume: ') .. tostring((state.music_volume or 0.5)*10))
     end}
 
     self.video_button_1 = Button{group = self.ui, x = gw/2 - 136, y = gh - 125, force_update = true, button_text = T('option_window_size_minus', 'window size-'), fg_color = 'bg10', bg_color = 'bg', action = function()
@@ -2063,7 +2063,7 @@ function open_options(self)
         b.selected = true
         current_new_game_plus = math.clamp(current_new_game_plus - 1, 0, 5)
         state.current_new_game_plus = current_new_game_plus
-        self.ng_t.text:set_text({{text = '[bg10]current: ' .. current_new_game_plus, font = pixul_font, alignment = 'center'}})
+        self.ng_t.text:set_text({{text = '[bg10]' .. T('current_ng', 'current: ') .. current_new_game_plus, font = pixul_font, alignment = 'center'}})
         max_units = 7 + current_new_game_plus
         system.save_run()
       end}
@@ -2074,7 +2074,7 @@ function open_options(self)
         b.selected = true
         current_new_game_plus = math.clamp(current_new_game_plus + 1, 0, new_game_plus)
         state.current_new_game_plus = current_new_game_plus
-        self.ng_t.text:set_text({{text = '[bg10]current: ' .. current_new_game_plus, font = pixul_font, alignment = 'center'}})
+        self.ng_t.text:set_text({{text = '[bg10]' .. T('current_ng', 'current: ') .. current_new_game_plus, font = pixul_font, alignment = 'center'}})
         max_units = 7 + current_new_game_plus
         system.save_run()
       end}
