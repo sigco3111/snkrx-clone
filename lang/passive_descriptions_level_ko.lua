@@ -1,3 +1,25 @@
+-- passive_descriptions_level_ko.lua — 패시브 레벨별 설명 한글 (84개)
+-- v0.1.10 (한국어화 fork): main.lua의 local ts/ylb1/ylb2/ylb3를 자체 정의.
+-- ko.lua가 shared.lua에서 require되므로 main.lua 로컬 함수에 직접 접근 불가.
+local ylb1 = function(lvl)
+  if lvl == 3 then return 'light_bg'
+  elseif lvl == 2 then return 'light_bg'
+  elseif lvl == 1 then return 'yellow'
+  else return 'light_bg' end
+end
+local ylb2 = function(lvl)
+  if lvl == 3 then return 'light_bg'
+  elseif lvl == 2 then return 'yellow'
+  else return 'light_bg' end
+end
+local ylb3 = function(lvl)
+  if lvl == 3 then return 'yellow'
+  else return 'light_bg' end
+end
+local ts = function(lvl, a, b, c)
+  return '[' .. ylb1(lvl) .. ']' .. tostring(a) .. '[light_bg]/[' .. ylb2(lvl) .. ']' .. tostring(b) .. '[light_bg]/[' .. ylb3(lvl) .. ']' .. tostring(c) .. '[fg]'
+end
+
 return {
   ['centipede'] = function(lvl) return ts(lvl, '+10%', '20%', '30%') .. '이동속도' end,
   ['ouroboros_technique_r'] = function(lvl) return '[fg]오른쪽으로 회전하며 발사' .. ts(lvl, '2', '3', '4') .. '투사체/초' end,
