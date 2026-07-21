@@ -158,7 +158,7 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
   end, mouse_enter = function(b)
     b.info_text = InfoText{group = main.current.ui, force_update = true}
     b.info_text:activate({
-      {text = '[fg]restart run', font = pixul_font, alignment = 'center'},
+      {text = T('restart_confirm', '[fg]런 재시작'), font = pixul_font, alignment = 'center'},
     }, nil, nil, nil, nil, 16, 4, nil, 2)
     b.info_text.x, b.info_text.y = b.x, b.y + 20
   end, mouse_exit = function(b)
@@ -275,7 +275,7 @@ function BuyScreen:buy(character, i)
       if not self.info_text then
         self.info_text = InfoText{group = main.current.ui}
         self.info_text:activate({
-          {text = "[fg]this unit has already reached max level", font = pixul_font, alignment = 'center'},
+          {text = T('msg_max_level', '[fg]이 유닛은 이미 최대 레벨입니다'), font = pixul_font, alignment = 'center'},
         }, nil, nil, nil, nil, 16, 4, nil, 2)
         self.info_text.x, self.info_text.y = gw - 140, gh - 20
       end
@@ -315,7 +315,7 @@ function BuyScreen:buy(character, i)
       if not self.info_text then
         self.info_text = InfoText{group = main.current.ui}
         self.info_text:activate({
-          {text = '[fg]maximum number of units [yellow](' .. max_units .. ') [fg]reached', font = pixul_font, alignment = 'center'},
+          {text = T('msg_max_units', '[fg]최대 유닛 수 초과 [yellow](') .. max_units .. T('msg_max_units_2', ') [fg]'), font = pixul_font, alignment = 'center'},
         }, nil, nil, nil, nil, 16, 4, nil, 2)
         self.info_text.x, self.info_text.y = gw - 140, gh - 20
       end
@@ -693,7 +693,7 @@ function GoButton:update(dt)
         error1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
         self.info_text = InfoText{group = main.current.ui}
         self.info_text:activate({
-          {text = '[fg]cannot start the round with [yellow]0 [fg]units', font = pixul_font, alignment = 'center'},
+          {text = T('msg_no_units', '[fg]유닛 [yellow]0[fg]개로는 라운드를 시작할 수 없습니다'), font = pixul_font, alignment = 'center'},
         }, nil, nil, nil, nil, 16, 4, nil, 2)
         self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
       end
@@ -824,7 +824,7 @@ function LevelButton:update(dt)
       if not self.info_text_2 then
         self.info_text_2 = InfoText{group = main.current.ui}
         self.info_text_2:activate({
-          {text = '[fg]not enough gold', font = pixul_font, alignment = 'center'},
+          {text = T('msg_no_gold', '[fg]골드가 부족합니다'), font = pixul_font, alignment = 'center'},
         }, nil, nil, nil, nil, 16, 4, nil, 2)
         self.info_text_2.x, self.info_text_2.y = gw/2, gh/2 + 30
       end
@@ -857,7 +857,7 @@ function LevelButton:update(dt)
       if not self.info_text_2 then
         self.info_text_2 = InfoText{group = main.current.ui}
         self.info_text_2:activate({
-          {text = '[fg]not enough gold', font = pixul_font, alignment = 'center'},
+          {text = T('msg_no_gold', '[fg]골드가 부족합니다'), font = pixul_font, alignment = 'center'},
         }, nil, nil, nil, nil, 16, 4, nil, 2)
         self.info_text_2.x, self.info_text_2.y = gw/2, gh/2 + 30
       end
@@ -998,7 +998,7 @@ function RerollButton:update(dt)
         if not self.info_text then
           self.info_text = InfoText{group = main.current.ui}
           self.info_text:activate({
-            {text = '[fg]not enough gold', font = pixul_font, alignment = 'center'},
+            {text = T('msg_no_gold', '[fg]골드가 부족합니다'), font = pixul_font, alignment = 'center'},
           }, nil, nil, nil, nil, 16, 4, nil, 2)
           self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
         end
@@ -1020,7 +1020,7 @@ function RerollButton:update(dt)
         if not self.info_text then
           self.info_text = InfoText{group = main.current.ui, force_update = true}
           self.info_text:activate({
-            {text = '[fg]not enough gold', font = pixul_font, alignment = 'center'},
+            {text = T('msg_no_gold', '[fg]골드가 부족합니다'), font = pixul_font, alignment = 'center'},
           }, nil, nil, nil, nil, 16, 4, nil, 2)
           self.info_text.x, self.info_text.y = gw/2, gh/2 + 10
         end
@@ -1445,7 +1445,7 @@ function ItemCard:update(dt)
       if not self.info_text_2 then
         self.info_text_2 = InfoText{group = main.current.ui}
         self.info_text_2:activate({
-          {text = '[fg]not enough gold', font = pixul_font, alignment = 'center'},
+          {text = T('msg_no_gold', '[fg]골드가 부족합니다'), font = pixul_font, alignment = 'center'},
         }, nil, nil, nil, nil, 16, 4, nil, 2)
         self.info_text_2.x, self.info_text_2.y = gw/2, gh/2 + 30
       end

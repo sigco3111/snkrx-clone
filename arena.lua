@@ -452,7 +452,7 @@ function Arena:quit()
           system.open_url(url)
         end
 
-        self.build_text = Text2{group = self.ui, x = 40, y = 20, force_update = true, lines = {{text = "[wavy_mid, fg]your build", font = pixul_font, alignment = 'center'}}}
+        self.build_text = Text2{group = self.ui, x = 40, y = 20, force_update = true, lines = {{text = T('your_build', '[wavy_mid, fg]내 빌드'), font = pixul_font, alignment = 'center'}}}
         for i, unit in ipairs(self.units) do
           CharacterPart{group = self.ui, x = 20, y = 40 + (i-1)*19, character = unit.character, level = unit.level, force_update = true, cant_click = true, parent = self}
           Text2{group = self.ui, x = 20 + 14 + pixul_font:get_text_width(unit.character)/2, y = 40 + (i-1)*19, force_update = true, lines = {
@@ -473,11 +473,11 @@ function Arena:quit()
           max_units = 12
 
           self.win_text2 = Text2{group = self.ui, x = gw/2 + 40, y = gh/2 + 20, force_update = true, lines = {
-            {text = "[fg]now you've really beaten the game!", font = pixul_font, alignment = 'center', height_multiplier = 1.24},
-            {text = "[fg]thanks a lot for playing it and completing it entirely!", font = pixul_font, alignment = 'center', height_multiplier = 1.24},
-            {text = "[fg]this game was inspired by:", font = pixul_font, alignment = 'center', height_multiplier = 3.5},
-            {text = "[fg]so check them out! and to get more games like this:", font = pixul_font, alignment = 'center', height_multiplier = 3.5},
-            {text = "[wavy_mid, yellow]thanks for playing!", font = pixul_font, alignment = 'center'},
+            {text = T('msg_victory_real', '[fg]정말로 게임을 정복하셨습니다!'), font = pixul_font, alignment = 'center', height_multiplier = 1.24},
+            {text = T('msg_thanks_complete', '[fg]플레이하고 완전히 클리어해 주셔서 정말 감사합니다!'), font = pixul_font, alignment = 'center', height_multiplier = 1.24},
+            {text = T('msg_inspired_by', '[fg]이 게임은 다음에서 영감을 받았습니다:'), font = pixul_font, alignment = 'center', height_multiplier = 3.5},
+            {text = T('msg_check_more', '[fg]한번 둘러보세요! 이런 게임을 더 원하시면:'), font = pixul_font, alignment = 'center', height_multiplier = 3.5},
+            {text = T('msg_thanks_playing', '[wavy_mid, yellow]플레이해 주셔서 감사합니다!'), font = pixul_font, alignment = 'center'},
           }}
           SteamFollowButton{group = self.ui, x = gw/2 + 40, y = gh/2 + 58, force_update = true}
           Button{group = self.ui, x = gw - 40, y = gh - 44, force_update = true, button_text = T('credits', 'credits'), fg_color = 'bg10', bg_color = 'bg', action = function() self:create_credits() end}
@@ -485,24 +485,24 @@ function Arena:quit()
           self.try_loop_text = Text2{group = self.ui, x = gw - 144, y = gh - 20, force_update = true, lines = {
             {text = '[bg10]' .. T('continue_run_diff', 'continue run (+difficulty):'), font = pixul_font},
           }}
-          Button{group = self.ui, x = gw/2 - 50 + 40, y = gh/2 + 12, force_update = true, button_text = 'nimble quest', fg_color = 'bluem5', bg_color = 'blue', action = function(b) open_url(b, 'https://store.steampowered.com/app/259780/Nimble_Quest/') end}
-          Button{group = self.ui, x = gw/2 + 50 + 40, y = gh/2 + 12, force_update = true, button_text = 'dota underlords', fg_color = 'bluem5', bg_color = 'blue', action = function(b) open_url(b, 'https://store.steampowered.com/app/1046930/Dota_Underlords/') end}
+          Button{group = self.ui, x = gw/2 - 50 + 40, y = gh/2 + 12, force_update = true, button_text = T('nimble_quest', 'nimble quest'), fg_color = 'bluem5', bg_color = 'blue', action = function(b) open_url(b, 'https://store.steampowered.com/app/259780/Nimble_Quest/') end}
+          Button{group = self.ui, x = gw/2 + 50 + 40, y = gh/2 + 12, force_update = true, button_text = T('dota_underlords', 'dota underlords'), fg_color = 'bluem5', bg_color = 'blue', action = function(b) open_url(b, 'https://store.steampowered.com/app/1046930/Dota_Underlords/') end}
 
         else
           self.win_text2 = Text2{group = self.ui, x = gw/2 + 40, y = gh/2 + 5, force_update = true, lines = {
-            {text = "[fg]you've beaten the game!", font = pixul_font, alignment = 'center', height_multiplier = 1.24},
-            {text = "[fg]if you liked it:", font = pixul_font, alignment = 'center', height_multiplier = 3.5},
-            {text = "[fg]and if you liked the music:", font = pixul_font, alignment = 'center', height_multiplier = 3.5},
-            {text = "[wavy_mid, yellow]thanks for playing!", font = pixul_font, alignment = 'center'},
+            {text = T('msg_victory', '[fg]게임을 클리어했습니다!'), font = pixul_font, alignment = 'center', height_multiplier = 1.24},
+            {text = T('msg_if_liked', '[fg]마음에 드셨다면:'), font = pixul_font, alignment = 'center', height_multiplier = 3.5},
+            {text = T('msg_if_liked_music', '[fg]음악도 마음에 드셨다면:'), font = pixul_font, alignment = 'center', height_multiplier = 3.5},
+            {text = T('msg_thanks_playing', '[wavy_mid, yellow]플레이해 주셔서 감사합니다!'), font = pixul_font, alignment = 'center'},
           }}
           --[[
           self.win_text2 = Text2{group = self.ui, x = gw/2 + 40, y = gh/2 + 20, force_update = true, lines = {
-            {text = "[fg]you've beaten the game!", font = pixul_font, alignment = 'center', height_multiplier = 1.24},
-            {text = "[fg]i made this game in 3 months as a dev challenge", font = pixul_font, alignment = 'center', height_multiplier = 1.24},
-            {text = "[fg]and i'm happy with how it turned out!", font = pixul_font, alignment = 'center', height_multiplier = 1.24},
-            {text = "[fg]if you liked it too and want to play more games like this:", font = pixul_font, alignment = 'center', height_multiplier = 4},
-            {text = "[fg]i will release more games this year, so stay tuned!", font = pixul_font, alignment = 'center', height_multiplier = 1.4},
-            {text = "[wavy_mid, yellow]thanks for playing!", font = pixul_font, alignment = 'center'},
+            {text = T('msg_victory', '[fg]게임을 클리어했습니다!'), font = pixul_font, alignment = 'center', height_multiplier = 1.24},
+            {text = T('msg_3months', '[fg]이 게임은 개발 챌린지로 3개월간 만들었습니다'), font = pixul_font, alignment = 'center', height_multiplier = 1.24},
+            {text = T('msg_happy', '[fg]결과가 마음에 듭니다!'), font = pixul_font, alignment = 'center', height_multiplier = 1.24},
+            {text = T('msg_more_games', '[fg]마음에 드셨고 이런 게임을 더 플레이하고 싶으시다면:'), font = pixul_font, alignment = 'center', height_multiplier = 4},
+            {text = T('msg_stay_tuned', '[fg]올해 더 많은 게임을 출시할 예정이니 기대해 주세요!'), font = pixul_font, alignment = 'center', height_multiplier = 1.4},
+            {text = T('msg_thanks_playing', '[wavy_mid, yellow]플레이해 주셔서 감사합니다!'), font = pixul_font, alignment = 'center'},
           }}
           ]]--
           SteamFollowButton{group = self.ui, x = gw/2 + 40, y = gh/2 - 10, force_update = true}
@@ -515,7 +515,7 @@ function Arena:quit()
           self.try_ng_text = Text2{group = self.ui, x = gw - 187, y = gh - 20, force_update = true, lines = {
             {text = '[bg10]' .. T('new_run_diff_max', 'new run (+difficulty, +1 max snake size):'), font = pixul_font},
           }}
-          self.credits_button = Button{group = self.ui, x = gw - 40, y = gh - 68, force_update = true, button_text = 'credits', fg_color = 'bg10', bg_color = 'bg', action = function() self:create_credits() end}
+          self.credits_button = Button{group = self.ui, x = gw - 40, y = gh - 68, force_update = true, button_text = T('credits', 'credits'), fg_color = 'bg10', bg_color = 'bg', action = function() self:create_credits() end}
         end
       end)
 
@@ -686,7 +686,7 @@ function Arena:quit()
         RerollButton{group = main.current.ui, x = gw - 40, y = gh - 40, parent = self, force_update = true}
         self.shop_text = Text({{text = '[wavy_mid, fg]gold: [yellow]' .. gold, font = pixul_font, alignment = 'center'}}, global_text_tags)
 
-        self.build_text = Text2{group = self.ui, x = 40, y = 20, force_update = true, lines = {{text = "[wavy_mid, fg]your build", font = pixul_font, alignment = 'center'}}}
+        self.build_text = Text2{group = self.ui, x = 40, y = 20, force_update = true, lines = {{text = T('your_build', '[wavy_mid, fg]내 빌드'), font = pixul_font, alignment = 'center'}}}
         for i, unit in ipairs(self.units) do
           CharacterPart{group = self.ui, x = 20, y = 40 + (i-1)*19, character = unit.character, level = unit.level, force_update = true, cant_click = true, parent = self}
           Text2{group = self.ui, x = 20 + 14 + pixul_font:get_text_width(unit.character)/2, y = 40 + (i-1)*19, force_update = true, lines = {
@@ -827,7 +827,7 @@ function Arena:die()
     }}
     trigger:tween(2, camera, {x = gw/2, y = gh/2, r = 0}, math.linear, function() camera.x, camera.y, camera.r = gw/2, gh/2, 0 end)
     self.t:after(2, function()
-      self.build_text = Text2{group = self.ui, x = 40, y = 20, force_update = true, lines = {{text = "[wavy_mid, fg]your build", font = pixul_font, alignment = 'center'}}}
+      self.build_text = Text2{group = self.ui, x = 40, y = 20, force_update = true, lines = {{text = T('your_build', '[wavy_mid, fg]내 빌드'), font = pixul_font, alignment = 'center'}}}
       for i, unit in ipairs(self.units) do
         CharacterPart{group = self.ui, x = 20, y = 40 + (i-1)*19, character = unit.character, level = unit.level, force_update = true, cant_click = true, parent = self}
         Text2{group = self.ui, x = 20 + 14 + pixul_font:get_text_width(unit.character)/2, y = 40 + (i-1)*19, force_update = true, lines = {

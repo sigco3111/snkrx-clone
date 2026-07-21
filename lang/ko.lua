@@ -231,4 +231,28 @@ return {
   back              = '뒤로',
   close             = '닫기',
   continue          = '계속',
+
+  -- ===== 안내 메시지 (buy_screen.lua hover/click info_text) =====
+  msg_max_level      = '[fg]이 유닛은 이미 최대 레벨입니다',
+  msg_max_units      = '[fg]최대 유닛 수 초과 [yellow](',
+  msg_max_units_2    = ') [fg]도달',
+  msg_no_units       = '[fg]유닛 [yellow]0[fg]개로는 라운드를 시작할 수 없습니다',
+  msg_no_gold        = '[fg]골드가 부족합니다',
+
+  -- ===== arena.lua 승리/엔딩 메시지 =====
+  your_build           = '[wavy_mid, fg]내 빌드',
+  msg_victory_real     = '[fg]정말로 게임을 정복하셨습니다!',
+  msg_thanks_complete  = '[fg]플레이하고 완전히 클리어해 주셔서 정말 감사합니다!',
+  msg_inspired_by      = '[fg]이 게임은 다음에서 영감을 받았습니다:',
+  msg_check_more       = '[fg]한번 둘러보세요! 이런 게임을 더 원하시면:',
+  msg_thanks_playing   = '[wavy_mid, yellow]플레이해 주셔서 감사합니다!',
+  msg_victory          = '[fg]게임을 클리어했습니다!',
+  msg_if_liked         = '[fg]마음에 드셨다면:',
+  msg_if_liked_music   = '[fg]음악도 마음에 드셨다면:',
+  msg_3months          = '[fg]이 게임은 개발 챌린지로 3개월간 만들었습니다',
+  msg_happy            = '[fg]결과가 마음에 듭니다!',
+  msg_more_games       = '[fg]마음에 드셨고 이런 게임을 더 플레이하고 싶으시다면:',
+  msg_stay_tuned       = '[fg]올해 더 많은 게임을 출시할 예정이니 기대해 주세요!',
+  nimble_quest         = '님블 퀘스트',
+  dota_underlords      = '도타 언더로즈',
 }
