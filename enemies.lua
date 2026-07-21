@@ -894,6 +894,19 @@ end
 function EnemyCritter:draw()
   graphics.push(self.x, self.y, self.r, self.hfx.hit.x, self.hfx.hit.x)
     graphics.rectangle(self.x, self.y, self.shape.w, self.shape.h, 2, 2, self.hfx.hit.f and fg[0] or self.color)
+    -- v0.1.11 (한국어화 fork): 적 종류 라벨 표시 (HP바 위)
+    -- 보스 여부 확인 (classes에 'mini_boss' 또는 'boss' 포함)
+    local enemy_label = ''
+    if self.classes and table.any(self.classes, function(c) return c == 'mini_boss' or c == 'boss' end) then
+      enemy_label = T('enemy_boss', '보스')
+    elseif self.classes and table.any(self.classes, function(c) return c == 'seeker' end) then
+      enemy_label = T('enemy_seeker', '추적자')
+    elseif self.classes and table.any(self.classes, function(c) return c == 'enemy_critter' end) then
+      enemy_label = T('enemy_critter', '잡몹')
+    end
+    if enemy_label ~= '' then
+      graphics.print_centered(enemy_label, pixul_font, self.x, self.y - self.shape.h - 8, 0, 0.7, 0.7, 0, 0, fg[0])
+    end
   graphics.pop()
 end
 

@@ -130,15 +130,7 @@ return {
 
   -- ===== 적 이름 (enemies.lua) =====
   enemy_critter     = '잡몹',
-  enemy_speed_booster = '신속한 자',
-  enemy_exploder    = '자폭자',
-  enemy_swarm       = '군체',
-  enemy_bomber      = '폭격자',
-  enemy_exploder_elite = '정예 자폭자',
-  enemy_swarm_elite = '정예 군체',
-  enemy_speed_booster_elite = '정예 신속자',
-  enemy_cluster_elite = '정예 군집',
-  enemy_exploder_strong = '강한 자폭자',
+  enemy_seeker      = '추적자',
   enemy_boss        = '보스',
 
   -- ===== 클래스 / 등급 (buy_screen.lua) =====
