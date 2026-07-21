@@ -1,4 +1,24 @@
 -- class_descriptions_ko.lua — 클래스 패시브 설명 한글 (16개 클래스)
+-- v0.1.8 (한국어화 fork): main.lua의 local ylb1/ylb2/ylb3를 자체 정의.
+-- 원본 class_descriptions는 main.lua 내부 로컬 함수를 참조하지만,
+-- ko.lua는 shared.lua에서 require되므로 별도 정의 필요.
+
+local ylb1 = function(lvl)
+  if lvl == 3 then return 'light_bg'
+  elseif lvl == 2 then return 'light_bg'
+  elseif lvl == 1 then return 'yellow'
+  else return 'light_bg' end
+end
+local ylb2 = function(lvl)
+  if lvl == 3 then return 'light_bg'
+  elseif lvl == 2 then return 'yellow'
+  else return 'light_bg' end
+end
+local ylb3 = function(lvl)
+  if lvl == 3 then return 'yellow'
+  else return 'light_bg' end
+end
+
 return {
   ['ranger'] = function(lvl) return '[' .. ylb1(lvl) .. ']3[light_bg]/[' .. ylb2(lvl) .. ']6 [fg]- [' .. ylb1(lvl) .. ']8%[light_bg]/[' .. ylb2(lvl) .. ']16% [fg]확률로 공격 시 아군 레인저에게 포격 발사' end,
   ['warrior'] = function(lvl) return '[' .. ylb1(lvl) .. ']3[light_bg]/[' .. ylb2(lvl) .. ']6 [fg]- [' .. ylb1(lvl) .. ']+25[light_bg]/[' .. ylb2(lvl) .. ']+50 [fg]방어력 (아군 전사)' end,
