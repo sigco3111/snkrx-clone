@@ -42,36 +42,42 @@ fi
 cp "$LOVE_OUTPUT" "$WINDOWS_DIR/"
 # run.bat와 README.txt 생성
 if [ ! -f "$WINDOWS_DIR/run.bat" ]; then
+    # v0.1.15 fix: 순수 ASCII 명령만 사용 (Windows CMD 코드페이지 949 환경에서 한글 깨짐 방지)
     cat > "$WINDOWS_DIR/run.bat" <<'BAT'
 @echo off
-REM SNKRX 한국어화 fork 실행 스크립트 (Windows)
+REM SNKRX Korean fork launcher (Windows)
 cd /d "%~dp0"
 love.exe snkrx-kr-v0.1.12.love
 if errorlevel 1 (
-    echo 게임 실행 중 오류.
+    echo.
+    echo Game failed to start.
+    echo Install Visual C++ 2013 Redistributable.
+    echo Or run: lovec.exe snkrx-kr-v0.1.12.love
     pause
 )
 BAT
-    echo "✅ run.bat 생성"
+    echo "✅ run.bat 생성 (ASCII 전용)"
 fi
 if [ ! -f "$WINDOWS_DIR/README.txt" ]; then
+    # README.txt는 한글 가능 (사용자가 메모장으로 열면 자동 디코딩)
     cat > "$WINDOWS_DIR/README.txt" <<'TXT'
-SNKRX 한국어화 fork v0.1.12 (Windows)
+SNKRX Korean fork v0.1.12 (Windows)
 
-[실행]
-1. run.bat 더블클릭
-2. 또는: love.exe snkrx-kr-v0.1.12.love
+[How to Run]
+1. Double-click run.bat
+2. Or: love.exe snkrx-kr-v0.1.12.love
 
-[키 조작]
-- A/D 또는 ←/→ : 뱀 좌/우 조종
-- Space : 일시정지
-- 마우스 : 유닛 구매/판매
+[Controls]
+- A/D or Arrow keys : Move snake left/right
+- Space : Pause
+- Mouse : Buy/sell units
 
-[문제 해결]
-- "DLL 없음": Visual C++ 2013 재배포 패키지 설치
-- 콘솔 표시하며 실행: lovec.exe snkrx-kr-v0.1.12.love
+[Troubleshooting]
+- "Missing DLL": Install Visual C++ 2013 Redistributable
+- Run with console: lovec.exe snkrx-kr-v0.1.12.love
 
-https://github.com/sigco3111/snkrx-clone
+[원본/Original] https://github.com/a327ex/SNKRX
+[Fork] https://github.com/sigco3111/snkrx-clone
 TXT
     echo "✅ README.txt 생성"
 fi
