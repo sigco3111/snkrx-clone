@@ -10,6 +10,7 @@ require 'media'
 
 
 function init()
+  state = state or {}  -- v0.1.22: main.lua의 state 전역 초기화 (system.lua의 state와 별개이지만 동기화 시작점)
   shared_init()
 
   input:bind('move_left', {'a', 'left', 'dpleft', 'm1'})
@@ -2150,13 +2151,12 @@ end
 function love.run()
   return engine_run({
     game_name = 'SNKRX',
-    -- v0.1 (한국어화 fork): SNKRX는 좌표계를 480x270으로 하드코딩 가정 (main.lua의
-    -- setMode(480*sx, 270*sy) 호출들). game_width/height는 480x270 그대로 두고,
-    -- window_width/height만 키워서 sx = window/480 비율로 오브젝트가 비례 확대되도록.
-    -- 1280x720 윈도우 → sx = 1280/480 ≈ 2.67 → 오브젝트 2.67배 확대 (원본 960x540의 1.33배).
-    -- 1280x720은 비표준이라 macOS 풀스크린화 회피.
-    window_width = 1280,
-    window_height = 720,
+    -- v0.1.22: window_width/height를 config에서 제거.
+    -- 이유: main.lua가 항상 1280x720을 보내면 engine은 config 우선 → state.sx/sy 무시.
+    -- 제거하면 engine의 state.sx/sy 분기가 실행되어 사용자가 마지막에 설정한 크기 복원.
+    -- 단, 'half'/'max' 같은 명시적 모드는 가능.
+    -- game_width/height는 좌표계 480x270으로 하드코딩 가정 (main.lua의
+    -- setMode(480*sx, 270*sy) 호출들). sx = window/480 비율로 오브젝트 비례 확대.
     game_width = 480,
     game_height = 270,
   })

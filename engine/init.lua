@@ -57,8 +57,8 @@ function engine_run(config)
     if config.window_width == 'half' then window_width = math.floor(window_width / 2) end
     if config.window_height == 'half' then window_height = math.floor(window_height / 2) end
 
-    if config.window_width ~= 'max' and config.window_width ~= 'half' then window_width = config.window_width end
-    if config.window_height ~= 'max' and config.window_height ~= 'half' then window_height = config.window_height end
+    if config.window_width ~= 'max' and config.window_width ~= 'half' and config.window_width ~= nil then window_width = config.window_width end
+    if config.window_height ~= 'max' and config.window_height ~= 'half' and config.window_height ~= nil then window_height = config.window_height end
 
     local limits = love.graphics.getSystemLimits()
     local anisotropy = limits.anisotropy
@@ -101,12 +101,15 @@ function engine_run(config)
     love.window.setMode(window_width, window_height, {
       vsync = config.vsync,
       msaa = msaa or 0,
-      display = 1,
+      display = 0,  -- v0.1.22: display 1 → 0 (macOS에서 디스플레이 1이 없을 수 있음)
       fullscreen = fullscreen_mode,
       borderless = false,
       resizable = true,
     })
     love.window.setTitle(config.game_name)
+    -- v0.1.22: setMode 직후 즉시 save_state → state.txt가 다음 시작 전에 존재.
+    -- quit 이벤트에서만 save하면 첫 사용자의 state가 안 만들어짐.
+    system.save_state()
 
   else
     gw, gh = config.game_width or 480, config.game_height or 270 

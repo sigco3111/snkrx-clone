@@ -133,7 +133,7 @@ function system.load_state()
   end
   local chunk = love.filesystem.load("state.txt")
   if chunk then state = chunk()
-  else state = {} end
+  else state = state or {} end
 end
 
 
