@@ -2012,13 +2012,25 @@ function open_options(self)
 
     self.video_button_3 = Button{group = self.ui, x = gw/2 + 29, y = gh - 125, force_update = true, button_text = T('option_fullscreen', 'fullscreen'), fg_color = 'bg10', bg_color = 'bg', action = function()
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
-      local _, _, flags = love.window.getMode()
-      local window_width, window_height = love.window.getDesktopDimensions(flags.display)
-      sx, sy = window_width/480, window_height/270
-      state.sx, state.sy = sx, sy
-      ww, wh = window_width, window_height
-      state.fullscreen = true  -- v0.1.20: 풀스크린 상태 저장
-      love.window.setMode(window_width, window_height, {fullscreen = true})  -- v0.1.20: 풀스크린으로 setMode
+      if state.fullscreen then
+        -- v0.1.23: 풀스크린 OFF → 사용자가 마지막에 설정한 창 크기(state.sx/sy)로 복귀
+        local restore_sx = (state.sx and state.sx >= 0.5 and state.sx <= 3) and state.sx or 1.666
+        local restore_sy = (state.sy and state.sy >= 0.5 and state.sy <= 3) and state.sy or 1.666
+        window_width = math.floor(restore_sx * 480)
+        window_height = math.floor(restore_sy * 270)
+        sx, sy = restore_sx, restore_sy
+        state.fullscreen = false
+        love.window.setMode(window_width, window_height, {fullscreen = false})
+      else
+        -- 풀스크린 ON: 데스크톱 크기
+        local _, _, flags = love.window.getMode()
+        window_width, window_height = love.window.getDesktopDimensions(flags.display)
+        sx, sy = window_width/480, window_height/270
+        state.sx, state.sy = sx, sy
+        ww, wh = window_width, window_height
+        state.fullscreen = true
+        love.window.setMode(window_width, window_height, {fullscreen = true})
+      end
       system.save_state()  -- v0.1.20
     end}
 
