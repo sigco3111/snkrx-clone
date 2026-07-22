@@ -101,14 +101,25 @@ function engine_run(config)
     love.window.setMode(window_width, window_height, {
       vsync = config.vsync,
       msaa = msaa or 0,
-      display = 0,  -- v0.1.22: display 1 → 0 (macOS에서 디스플레이 1이 없을 수 있음)
+      -- v0.1.24: display 옵션 제거. macOS love2d 11.5에서 display = 0/1이 외장 디스플레이로 잘못 매핑되어 데스크톱 크기로 maximize되는 버그.
       fullscreen = fullscreen_mode,
       borderless = false,
       resizable = true,
     })
     love.window.setTitle(config.game_name)
+    -- v0.1.24: macOS love2d 11.5 버그 회피. setMode가 width/height를 무시하고 maximize할 수 있음.
+    -- 요청한 크기와 실제 flags.width의 차이가 1.5배 이상이면 같은 크기로 한 번 더 호출.
+    local _, _, flags_check = love.window.getMode()
+    if flags_check and flags_check.width and window_width and flags_check.width > window_width * 1.5 then
+      love.window.setMode(window_width, window_height, {
+        vsync = config.vsync,
+        msaa = msaa or 0,
+        fullscreen = fullscreen_mode,
+        borderless = false,
+        resizable = true,
+      })
+    end
     -- v0.1.22: setMode 직후 즉시 save_state → state.txt가 다음 시작 전에 존재.
-    -- quit 이벤트에서만 save하면 첫 사용자의 state가 안 만들어짐.
     system.save_state()
 
   else

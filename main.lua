@@ -2020,7 +2020,8 @@ function open_options(self)
         window_height = math.floor(restore_sy * 270)
         sx, sy = restore_sx, restore_sy
         state.fullscreen = false
-        love.window.setMode(window_width, window_height, {fullscreen = false})
+        -- v0.1.24: display 옵션 제거 (macOS love2d 11.5 버그)
+        love.window.setMode(window_width, window_height, {fullscreen = false, borderless = false, resizable = true})
       else
         -- 풀스크린 ON: 데스크톱 크기
         local _, _, flags = love.window.getMode()
@@ -2029,7 +2030,7 @@ function open_options(self)
         state.sx, state.sy = sx, sy
         ww, wh = window_width, window_height
         state.fullscreen = true
-        love.window.setMode(window_width, window_height, {fullscreen = true})
+        love.window.setMode(window_width, window_height, {fullscreen = true, borderless = false, resizable = true})
       end
       system.save_state()  -- v0.1.20
     end}
