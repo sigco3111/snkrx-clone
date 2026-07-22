@@ -12,10 +12,10 @@
 
 | 플랫폼 | 파일 | 크기 | 설치 |
 |---|---|---|---|
-| **macOS** | `snkrx-kr-macos-v0.1.12.zip` | 86M | 압축 해제 → `SNKRX-한국어.app`을 Applications로 드래그 |
-| **Windows** | `snkrx-kr-windows-v0.1.12.zip` | 4.3M | 압축 해제 → `love-11.5-win64/run.bat` 더블클릭 |
-| **Linux** | `snkrx-kr-linux-v0.1.12.tar.gz` | 65M | 압축 해제 → `./run.sh` 실행 |
-| **크로스 플랫폼** | `snkrx-kr-v0.1.12.love` | 62M | love2d 설치 후 `love snkrx-kr-v0.1.12.love` |
+| **macOS** | `snkrx-kr-macos-v0.1.25.zip` | 86M | 압축 해제 → `SNKRX-한국어.app`을 Applications로 드래그 |
+| **Windows** | `snkrx-kr-windows-v0.1.25.zip` | 126M | 압축 해제 → `love-11.5-win64/run.bat` 더블클릭 |
+| **Linux** | `snkrx-kr-linux-v0.1.25.tar.gz` | 65M | 압축 해제 → `./run.sh` 실행 |
+| **크로스 플랫폼** | `snkrx-kr-v0.1.25.love` | 61M | love2d 설치 후 `love snkrx-kr-v0.1.25.love` |
 
 ### 직접 실행 (소스 코드)
 
@@ -50,6 +50,37 @@ https://user-images.githubusercontent.com/409773/119258159-ea982b00-bb9e-11eb-80
 | 11 | **Hover: 패시브 (84개)** | 이름 / 짧은 설명 / 레벨별 설명 — 자동 번역 |
 | 12 | **Hover: 상점 레벨** | 상점 확률 / 현재-다음 상점 / 등급 |
 | 13 | **새 기능: 적 이름 표시** | 잡몹 / 추적자 / 보스 라벨이 HP바 위에 표시 |
+
+## ✨ 변경 이력 (v0.1.13 ~ v0.1.25)
+
+### v0.1.25 — 풀스크린 OFF 후 종료 시 복원
+- `state.window_sx/sy` 백업 키 추가
+- ON 분기에서 state.sx/sy 덮어쓰지 않고 백업
+- OFF 분기에서 백업 우선 사용 → 마지막 창 크기 복원
+
+### v0.1.24 — setMode macOS love2d 11.5 버그 우회
+- `display` 옵션 제거 (외장 디스플레이로 잘못 매핑되는 버그)
+- macOS maximize 방지
+
+### v0.1.23 — 전체화면 토글
+- video_button_3 토글 동작
+- OFF 시 마지막 창 크기로 복귀
+
+### v0.1.22 — 옵션 영구 저장 수정
+- state.sx/sy가 가드 범위 내면 덮어쓰지 않음
+- setMode 직후 save_state 호출
+- display = 0 (macOS 단일 디스플레이)
+- main.lua에 state 초기화, system.lua에 _G.state 동기화
+
+### v0.1.20 ~ v0.1.21 — 옵션 영구 저장 + 전체화면
+- 모든 옵션 버튼 클릭 시 system.save_state() 호출
+- 풀스크린 시 setMode({fullscreen = true})
+- state.fullscreen 토글
+
+### v0.1.15 ~ v0.1.19 — Windows 배포 디버깅
+- run.bat 추가, 한글 깨짐 (ASCII), cd love-11.5-win64, game/ 폴더 + .love zip 둘 다 포함
+
+### v0.1.13 — README/MODIFIED.md 갱신, Release v0.1.12 발행
 
 ## 🔧 기술적 개선
 
