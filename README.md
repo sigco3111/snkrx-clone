@@ -6,9 +6,9 @@
 
 [SNKRX](https://store.steampowered.com/app/915310/SNKRX/)는 영웅들이 자동으로 공격하는 뱀(snake)을 조종하는 아케이트 슈터 로그라이크입니다. 이 fork는 한국어 환경에 맞게 UI를 번역하고, Steam 클라이언트 없이도 플레이 가능하도록 만들었습니다.
 
-## 📦 다운로드 (v0.1.12)
+## 📦 다운로드 (v0.1.25)
 
-**[GitHub Releases 페이지에서 다운로드](https://github.com/sigco3111/snkrx-clone/releases/tag/v0.1.12)**
+**[GitHub Releases 페이지에서 다운로드](https://github.com/sigco3111/snkrx-clone/releases/tag/v0.1.25)**
 
 | 플랫폼 | 파일 | 크기 | 설치 |
 |---|---|---|---|
