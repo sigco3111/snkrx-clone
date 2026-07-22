@@ -2013,21 +2013,32 @@ function open_options(self)
     self.video_button_3 = Button{group = self.ui, x = gw/2 + 29, y = gh - 125, force_update = true, button_text = T('option_fullscreen', 'fullscreen'), fg_color = 'bg10', bg_color = 'bg', action = function()
       ui_switch1:play{pitch = random:float(0.95, 1.05), volume = 0.5}
       if state.fullscreen then
-        -- v0.1.23: 풀스크린 OFF → 사용자가 마지막에 설정한 창 크기(state.sx/sy)로 복귀
-        local restore_sx = (state.sx and state.sx >= 0.5 and state.sx <= 3) and state.sx or 1.666
-        local restore_sy = (state.sy and state.sy >= 0.5 and state.sy <= 3) and state.sy or 1.666
+        -- v0.1.23: 풀스크린 OFF → 사용자가 마지막에 설정한 창 크기로 복귀.
+        -- v0.1.25: state.sx가 풀스크린 ON 분기에서 4로 덮어써질 수 있으므로 별도 backup 키 사용.
+        -- 우선순위: state.window_sx/sy (백업) > state.sx/sy (가드 내) > 기본값 1.666
+        local restore_sx = (state.window_sx and state.window_sx >= 0.5 and state.window_sx <= 3) and state.window_sx
+                           or ((state.sx and state.sx >= 0.5 and state.sx <= 3) and state.sx or 1.666)
+        local restore_sy = (state.window_sy and state.window_sy >= 0.5 and state.window_sy <= 3) and state.window_sy
+                           or ((state.sy and state.sy >= 0.5 and state.sy <= 3) and state.sy or 1.666)
         window_width = math.floor(restore_sx * 480)
         window_height = math.floor(restore_sy * 270)
         sx, sy = restore_sx, restore_sy
         state.fullscreen = false
-        -- v0.1.24: display 옵션 제거 (macOS love2d 11.5 버그)
+        state.sx, state.sy = restore_sx, restore_sy  -- v0.1.25: 가드 내 값으로 복원
         love.window.setMode(window_width, window_height, {fullscreen = false, borderless = false, resizable = true})
       else
-        -- 풀스크린 ON: 데스크톱 크기
+        -- 풀스크린 ON: 데스크톱 크기. OFF 시 복원을 위해 현재 창 크기를 백업.
         local _, _, flags = love.window.getMode()
         window_width, window_height = love.window.getDesktopDimensions(flags.display)
+        -- v0.1.25: 현재 가드 내 state.sx/sy를 백업. 풀스크린 해제 시 복원용.
+        if state.sx and state.sx >= 0.5 and state.sx <= 3 then
+          state.window_sx = state.sx
+        end
+        if state.sy and state.sy >= 0.5 and state.sy <= 3 then
+          state.window_sy = state.sy
+        end
         sx, sy = window_width/480, window_height/270
-        state.sx, state.sy = sx, sy
+        -- state.sx/sy는 덮어쓰지 않음 (다음 풀스크린 OFF 시 복원 위해 보존)
         ww, wh = window_width, window_height
         state.fullscreen = true
         love.window.setMode(window_width, window_height, {fullscreen = true, borderless = false, resizable = true})
