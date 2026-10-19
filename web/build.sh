@@ -26,6 +26,21 @@ if '<head>' in s and 'JS ERROR' not in s:
     s = s.replace('<head>', '<head>\n' + hook, 1)
     open(p, 'w', encoding='utf-8').write(s)
 PY
+# 화면 비율/맞춤: 캔버스(960x540, 16:9)를 브라우저 크기에 맞춰 CSS로 확대/축소 (비율 유지)
+python3 - <<'PY'
+p = 'web/build/site/index.html'
+s = open(p, encoding='utf-8').read()
+fit = """<style>
+body { overflow: hidden; }
+h1 { margin: 6px 0; font-size: 20px; }
+#canvas { width: min(100vw, calc((100vh - 70px) * 16 / 9)); height: auto; aspect-ratio: 16 / 9; margin: 0 auto; }
+#loadingCanvas { width: min(100vw, calc((100vh - 70px) * 4 / 3)); height: auto; }
+#canvas:fullscreen, #canvas:-webkit-full-screen { width: 100vw; height: 100vh; object-fit: contain; background: #000; }
+</style>"""
+if 'aspect-ratio: 16 / 9' not in s:
+    s = s.replace('</head>', fit + '\n</head>', 1)
+    open(p, 'w', encoding='utf-8').write(s)
+PY
 # 캐시 버스팅: Pages는 asset에 max-age=600을 강제 → 재배포 시 구버전 파일이 섞이는 문제 방지
 python3 - <<'PY'
 import time
