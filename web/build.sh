@@ -12,7 +12,7 @@ hook = """<script>
 window.addEventListener('error', function(e) {
   var d = document.createElement('pre');
   d.style.cssText = 'position:fixed;top:0;left:0;z-index:99999;background:#fff;color:#c00;font:12px monospace;padding:8px;white-space:pre-wrap;max-width:100vw';
-  d.textContent = 'JS ERROR: ' + e.message + ' @ ' + (e.filename||'') + ':' + (e.lineno||'') + '\n' + (e.error && e.error.stack || '');
+  d.textContent = 'JS ERROR: ' + e.message + ' @ ' + (e.filename||'') + ':' + (e.lineno||'') + '\\n' + (e.error && e.error.stack || '');
   document.documentElement.appendChild(d);
 });
 window.addEventListener('unhandledrejection', function(e) {
