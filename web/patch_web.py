@@ -85,6 +85,25 @@ SoundTag = ripple.newTag
 Effect = love.audio.setEffect
 ''')
 
+
+def patch_group():
+    # engine/game/group.lua: goto/::continue:: 는 LuaJIT 전용 — love.js 호환 모드(PUC Lua 5.1)에서 문법 오류.
+    p = os.path.join(STAGING, 'engine', 'game', 'group.lua')
+    s = open(p, encoding='utf-8').read()
+    old = """    if tostring(cx) == tostring(0/0) or tostring(cy) == tostring(0/0) then goto continue end
+    if not self.cells[cx] then self.cells[cx] = {} end
+    if not self.cells[cx][cy] then self.cells[cx][cy] = {} end
+    table.insert(self.cells[cx][cy], object)
+    ::continue::"""
+    new = """    -- [web] PUC Lua 5.1에는 goto가 없어 조건 반전으로 대체
+    if not (tostring(cx) == tostring(0/0) or tostring(cy) == tostring(0/0)) then
+      if not self.cells[cx] then self.cells[cx] = {} end
+      if not self.cells[cx][cy] then self.cells[cx][cy] = {} end
+      table.insert(self.cells[cx][cy], object)
+    end"""
+    if old not in s: fail('group.lua: goto continue block not found')
+    open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
+
 def package():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     if os.path.exists(OUT): os.remove(OUT)
@@ -96,4 +115,4 @@ def package():
     print('Built %s (%.1f MB)' % (OUT, os.path.getsize(OUT)/1e6))
 
 if __name__ == '__main__':
-    stage(); patch_main(); patch_sound(); package()
+    stage(); patch_main(); patch_sound(); patch_group(); package()
