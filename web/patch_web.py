@@ -126,61 +126,23 @@ def patch_trigger():
     open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
 
 
-def patch_debug():
-    # [webdbg] 임시 진단용 브레드크럼 — buy_screen 진입 경로 어디서 멈추는지 콘솔에 출력
-    p = os.path.join(STAGING, 'buy_screen.lua')
-    s = open(p, encoding='utf-8').read()
-    a = "function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop_xp)"
-    if a not in s: fail('buy_screen.lua: on_enter anchor not found')
-    s = s.replace(a, a + "\n  print('[webdbg] on_enter start')", 1)
-    a = "  self:set_cards(self.shop_level, nil, true)"
-    if a not in s: fail('buy_screen.lua: set_cards call not found')
-    s = s.replace(a, "  print('[webdbg] before set_cards')" + a + "\n  print('[webdbg] after set_cards')", 1)
-    a = "  self:set_party_and_sets()"
-    if a not in s: fail('buy_screen.lua: set_party_and_sets call not found')
-    s = s.replace(a, a + "\n  print('[webdbg] after set_party_and_sets')", 1)
-    a = "  self:set_items()"
-    if a not in s: fail('buy_screen.lua: set_items call not found')
-    s = s.replace(a, a + "\n  print('[webdbg] after set_items')", 1)
-    # set_cards 리롤 루프 카운터 — 무한 루프면 콘솔에 반복 출력됨
-    a = "  repeat "
-    if a not in s: fail('buy_screen.lua: repeat anchor not found')
-    s = s.replace(a, "  local webdbg_i = 0\n  repeat \n    webdbg_i = webdbg_i + 1\n    if webdbg_i % 100000 == 0 then print('[webdbg] set_cards loop ' .. webdbg_i) end", 1)
-    open(p, 'w', encoding='utf-8').write(s)
-    # mainmenu: 버튼 액션 + transition_action 진입
-    p = os.path.join(STAGING, 'mainmenu.lua')
-    s = open(p, encoding='utf-8').read()
-    a = "      self.transitioning = true"
-    if a not in s: fail('mainmenu.lua: transitioning anchor not found')
-    s = s.replace(a, "      print('[webdbg] transition_action fired')\n" + a, 1)
-    a = "      local run = system.load_run()"
-    if a not in s: fail('mainmenu.lua: load_run anchor not found')
-    s = s.replace(a, a + "\n      print('[webdbg] after load_run')", 1)
-    a = "      system.save_state()"
-    if a not in s: fail('mainmenu.lua: save_state anchor not found')
-    s = s.replace(a, "      print('[webdbg] before save_state')\n" + a + "\n      print('[webdbg] after save_state')", 1)
-    a = "      main:add(BuyScreen'buy_screen')"
-    if a not in s: fail('mainmenu.lua: main:add anchor not found')
-    s = s.replace(a, a + "\n      print('[webdbg] after main:add')", 1)
-    a = "      main:go_to('buy_screen'"
-    if a not in s: fail('mainmenu.lua: go_to anchor not found')
-    s = s.replace(a, "      print('[webdbg] before go_to')\n" + a, 1)
-    open(p, 'w', encoding='utf-8').write(s)
-    # system.lua: save_state/load_run 내부 단계 추적
+def patch_system():
+    # engine/system.lua: love.js는 love.filesystem.load/write 경로에서 메인 스레드가 멈추는
+    # 문제가 있어 웹에서는 세이브/로드를 비활성화한다 (새로고침 시 진행 초기화, caveat로 명시).
     p = os.path.join(STAGING, 'engine', 'system.lua')
     s = open(p, encoding='utf-8').read()
-    a = "  love.filesystem.createDirectory(\"\")"
-    if a not in s: fail('system.lua: createDirectory anchor not found')
-    s = s.replace(a, "  print('[webdbg] save_state: before mkdir')\n" + a + "\n  print('[webdbg] save_state: after mkdir')", 1)
-    a = '  local str = "return " .. table.tostring(state or {})'
-    if a not in s: fail('system.lua: tostring anchor not found')
-    s = s.replace(a, a + "\n  print('[webdbg] save_state: after tostring')", 1)
-    a = '  love.filesystem.write("state.txt", str)'
-    if a not in s: fail('system.lua: write anchor not found')
-    s = s.replace(a, "  print('[webdbg] save_state: before write')\n" + a + "\n  print('[webdbg] save_state: after write')", 1)
-    a = '  local chunk = love.filesystem.load("run_v4.txt")'
-    if a not in s: fail('system.lua: load anchor not found')
-    s = s.replace(a, "  print('[webdbg] load_run: before load')\n" + a + "\n  print('[webdbg] load_run: after load')", 1)
+    a = "function system.save_state()"
+    if a not in s: fail('system.lua: save_state not found')
+    s = s.replace(a, a + "\n  if web then return end -- [web] love.js FS 행 방지", 1)
+    a = "function system.load_state()"
+    if a not in s: fail('system.lua: load_state not found')
+    s = s.replace(a, a + "\n  if web then state = state or {} return end -- [web] love.js FS 행 방지", 1)
+    a = "function system.save_run(level, loop, gold, units, passives, shop_level, shop_xp, run_passive_pool, locked_state)"
+    if a not in s: fail('system.lua: save_run not found')
+    s = s.replace(a, a + "\n  if web then return end -- [web] love.js FS 행 방지", 1)
+    a = "function system.load_run()"
+    if a not in s: fail('system.lua: load_run not found')
+    s = s.replace(a, a + "\n  if web then return {} end -- [web] love.js FS 행 방지", 1)
     open(p, 'w', encoding='utf-8').write(s)
 
 def package():
@@ -194,4 +156,4 @@ def package():
     print('Built %s (%.1f MB)' % (OUT, os.path.getsize(OUT)/1e6))
 
 if __name__ == '__main__':
-    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_debug(); package()
+    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_system(); package()
