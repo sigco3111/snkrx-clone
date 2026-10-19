@@ -25,6 +25,36 @@ cd snkrx-clone
 love .  # 또는 brew install --cask love 후 love .
 ```
 
+## 🌐 웹 버전 (GitHub Pages)
+
+**[브라우저에서 바로 플레이 →](https://sigco3111.github.io/snkrx-clone/)**
+
+설치 없이 브라우저에서 플레이할 수 있는 웹 버전입니다. [love.js](https://github.com/Davidobot/love.js)(LÖVE → WebAssembly)로 원본 Lua 코드를 그대로 변환했으며, JS 재작성 없이 엔진/게임 로직은 데스크톱 버전과 동일합니다.
+
+| 항목 | 상태 |
+|---|---|
+| 플레이 | ✅ 메뉴 → 상점 → 아레나 전 구간 동작 확인 |
+| 사운드/음악 | ❌ 제외 (빌드 경량화를 위해 사운드 에셋 미포함) |
+| 진행 저장 | ❌ 미지원 (새로고침 시 처음부터 — love.js 파일시스템 이슈 회피) |
+| 모바일(터치) | ❌ 미지원 — 마우스 + 키보드 필요 |
+| 창 크기/풀스크린 옵션 | 웹에서는 숨김 처리 |
+| FPS 표시 | 좌상단 오버레이로 항상 표시 (성능 확인용) |
+
+### 빌드/배포 방식
+
+- 원본 게임 코드는 수정하지 않고, `web/patch_web.py`가 스테이징 복사본에 최소 패치만 적용합니다.
+  - `web = true` 플래그로 엔진의 기존 웹 분기 활성화
+  - love.js 호환 모드(PUC Lua 5.1) 대응: `goto` 제거, 트윈 값 가드
+  - 사운드 무음 스텁, 세이브/로드 스텁 (love.js `love.filesystem` 행 회피)
+  - 창 옵션 버튼 숨김, FPS 오버레이 추가
+- `web/build.sh`: 패치 → `.love` 패키징 → love.js 변환 (`npx love.js -c`)
+- `.github/workflows/web-pages.yml`: master 푸시 시 자동 빌드 → GitHub Pages 배포
+
+### 웹 버전 크레딧
+
+- 원작: [a327ex/SNKRX](https://github.com/a327ex/SNKRX) (MIT License)
+- 원작 배경음악: **Kubbi — Ember** (웹 버전에는 용량 문제로 미포함)
+
 ## 🎬 게임 영상
 
 https://user-images.githubusercontent.com/409773/119258159-ea982b00-bb9e-11eb-8082-37e2c65591ea.mp4
