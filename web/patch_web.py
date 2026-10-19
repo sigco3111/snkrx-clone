@@ -125,6 +125,39 @@ def patch_trigger():
     if old not in s: fail('trigger.lua: tween update block not found')
     open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
 
+
+def patch_debug():
+    # [webdbg] 임시 진단용 브레드크럼 — buy_screen 진입 경로 어디서 멈추는지 콘솔에 출력
+    p = os.path.join(STAGING, 'buy_screen.lua')
+    s = open(p, encoding='utf-8').read()
+    a = "function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop_xp)"
+    if a not in s: fail('buy_screen.lua: on_enter anchor not found')
+    s = s.replace(a, a + "\n  print('[webdbg] on_enter start')", 1)
+    a = "  self:set_cards(self.shop_level, nil, true)"
+    if a not in s: fail('buy_screen.lua: set_cards call not found')
+    s = s.replace(a, "  print('[webdbg] before set_cards')" + a + "\n  print('[webdbg] after set_cards')", 1)
+    a = "  self:set_party_and_sets()"
+    if a not in s: fail('buy_screen.lua: set_party_and_sets call not found')
+    s = s.replace(a, a + "\n  print('[webdbg] after set_party_and_sets')", 1)
+    a = "  self:set_items()"
+    if a not in s: fail('buy_screen.lua: set_items call not found')
+    s = s.replace(a, a + "\n  print('[webdbg] after set_items')", 1)
+    # set_cards 리롤 루프 카운터 — 무한 루프면 콘솔에 반복 출력됨
+    a = "  repeat "
+    if a not in s: fail('buy_screen.lua: repeat anchor not found')
+    s = s.replace(a, "  local webdbg_i = 0\n  repeat \n    webdbg_i = webdbg_i + 1\n    if webdbg_i % 100000 == 0 then print('[webdbg] set_cards loop ' .. webdbg_i) end", 1)
+    open(p, 'w', encoding='utf-8').write(s)
+    # mainmenu: 버튼 액션 + transition_action 진입
+    p = os.path.join(STAGING, 'mainmenu.lua')
+    s = open(p, encoding='utf-8').read()
+    a = "      self.transitioning = true"
+    if a not in s: fail('mainmenu.lua: transitioning anchor not found')
+    s = s.replace(a, "      print('[webdbg] transition_action fired')\n" + a, 1)
+    a = "      main:go_to('buy_screen'"
+    if a not in s: fail('mainmenu.lua: go_to anchor not found')
+    s = s.replace(a, "      print('[webdbg] before go_to')\n" + a, 1)
+    open(p, 'w', encoding='utf-8').write(s)
+
 def package():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     if os.path.exists(OUT): os.remove(OUT)
@@ -136,4 +169,4 @@ def package():
     print('Built %s (%.1f MB)' % (OUT, os.path.getsize(OUT)/1e6))
 
 if __name__ == '__main__':
-    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); package()
+    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_debug(); package()
