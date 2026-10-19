@@ -39,6 +39,7 @@ love .  # 또는 brew install --cask love 후 love .
 | 모바일(터치) | ❌ 미지원 — 마우스 + 키보드 필요 |
 | 창 크기/풀스크린 옵션 | 웹에서는 숨김 처리 |
 | FPS 표시 | 좌상단 오버레이로 항상 표시 (성능 확인용) |
+| 렌더 해상도 | 내부 캔버스 2배(960x540) 렌더링 + 한글 16px 래스터 (HiDPI). GPU가 약하면 [classic 빌드](https://sigco3111.github.io/snkrx-clone/classic/)(8px, 픽셀 확대) 사용 가능 |
 
 ### 빌드/배포 방식
 
@@ -47,6 +48,7 @@ love .  # 또는 brew install --cask love 후 love .
   - love.js 호환 모드(PUC Lua 5.1) 대응: `goto` 제거, 트윈 값 가드
   - 사운드 무음 스텁, 세이브/로드 스텁 (love.js `love.filesystem` 행 회피)
   - 창 옵션 버튼 숨김, FPS 오버레이 추가
+  - HiDPI(`HIDPI=1`): 오프스크린 캔버스를 2배 해상도로 렌더링하고 한글은 16px 폰트를 0.5배로 그림 (레이아웃/마우스 좌표는 8px 기준 그대로). 루트(`/`)가 HiDPI, `/classic/`이 이전 빌드
 - `web/build.sh`: 패치 → `.love` 패키징 → love.js 변환 (`npx love.js -c`)
 - `.github/workflows/web-pages.yml`: master 푸시 시 자동 빌드 → GitHub Pages 배포
 
