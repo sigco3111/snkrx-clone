@@ -26,5 +26,19 @@ if '<head>' in s and 'JS ERROR' not in s:
     s = s.replace('<head>', '<head>\n' + hook, 1)
     open(p, 'w', encoding='utf-8').write(s)
 PY
+# 캐시 버스팅: Pages는 asset에 max-age=600을 강제 → 재배포 시 구버전 파일이 섞이는 문제 방지
+python3 - <<'PY'
+import time
+ts = str(int(time.time()))
+p = 'web/build/site/index.html'
+s = open(p, encoding='utf-8').read()
+s = s.replace('src="game.js"', 'src="game.js?v=' + ts + '"')
+open(p, 'w', encoding='utf-8').write(s)
+p = 'web/build/site/game.js'
+s = open(p, encoding='utf-8').read()
+s = s.replace("var REMOTE_PACKAGE_BASE = 'game.data';", "var REMOTE_PACKAGE_BASE = 'game.data?v=" + ts + "';")
+open(p, 'w', encoding='utf-8').write(s)
+print('cache-bust ts=' + ts)
+PY
 echo "Done: web/build/site"
 ls -la web/build/site
