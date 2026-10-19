@@ -211,6 +211,65 @@ function Font:get_font_for_text(text)""")
   if font.get_draw_font then draw_font, k = font:get_draw_font(text) end
   love.graphics.print(text, draw_font, x, y, r or 0, (sx or 1)/k, (sy or 1)/k, ((ox or 0) + active_w/2)*k, ((oy or 0) + active_h/2)*k)""")
 
+def _re(path, pattern, repl, min_count=1):
+    import re
+    p = os.path.join(STAGING, path)
+    s = open(p, encoding='utf-8').read()
+    s2, n = re.subn(pattern, lambda m: m.expand(repl), s)
+    if n < min_count: fail('%s: pattern matched %d (<%d): %s' % (path, n, min_count, pattern[:60]))
+    open(p, 'w', encoding='utf-8').write(s2)
+    print('i18n %s: %d x %s' % (path, n, pattern[:40]))
+
+def patch_i18n():
+    # 구매/아레나 화면에서 T() 없이 영어로 하드코딩된 UI 문자열을 스테이징 복사본에서만 T() 호출로 치환한다.
+    # (원본 코드 불변. 키가 없으면 T()가 영어 default를 그대로 표시하므로 안전)
+    # ko.lua에 새 키 추가
+    p = os.path.join(STAGING, 'lang', 'ko.lua')
+    s = open(p, encoding='utf-8').read()
+    i = s.rstrip().rfind('}')
+    extra = """
+  -- ===== [web] 추가 번역 키 (patch_i18n) =====
+  lock_label        = '잠금',
+  unlock_label      = '해제',
+  level_word        = '레벨',
+  gold_word         = '골드',
+  k_gold_gained     = '획득 골드',
+  k_interest        = '이자',
+  k_total           = '합계',
+  arena_clear       = '아레나 클리어!',
+  you_died          = '죽었습니다...',
+"""
+    open(p, 'w', encoding='utf-8').write(s[:i] + extra + s[i:])
+    B, A = 'buy_screen.lua', 'arena.lua'
+    # 상점/골드/파티 (구매 후 set_text 경로)
+    _re(B, r"'\[wavy_mid, fg\]shop \[fg\]- \[fg, nudge_down\]gold: \[yellow, nudge_down\]'",
+        "'[wavy_mid, fg]' .. T('shop_label', 'shop') .. ' [fg]- ' .. T('gold_label', '[fg, nudge_down]gold: [yellow, nudge_down]')", 5)
+    _re(B, r"\{text = '\[fg, nudge_down\]gold: \[yellow, nudge_down\]'",
+        "{text = T('gold_label', '[fg, nudge_down]gold: [yellow, nudge_down]')")
+    _re(B, r"'\[wavy_mid, fg\]party '", "'[wavy_mid, fg]' .. T('party_label', 'party') .. ' '", 2)
+    # 리롤 / 잠금
+    _re(B, r"'\[(fgm5|bg10)\]reroll: ", "'[\\1]' .. T('reroll', 'reroll') .. ': ", 6)
+    _re(B, r"tostring\(self\.parent\.locked and 'unlock' or 'lock'\)",
+        "tostring(self.parent.locked and T('unlock_label', 'unlock') or T('lock_label', 'lock'))", 4)
+    # 재시작/레벨/가이드
+    for f in (B, A):
+        _re(f, r"\]restarting\.\.\.'", "]' .. T('restarting', 'restarting...')")
+    _re(B, r"\]level ' \.\.", "]' .. T('level_word', 'level') .. ' ' ..")
+    _re(B, r"'\[fg\]guide'", "'[fg]' .. T('guide_btn', 'guide')")
+    # 스팀 홍보 문구
+    _re(B, r"'\[(greenm5|fgm5)\]follow me on steam!'", "'[\\1]' .. T('follow_steam', 'follow me on steam!')", 0)
+    _re(B, r"'\[(bg10|fgm5)\]w to wishlist'", "'[\\1]' .. T('wishlist_press', 'w to wishlist')", 0)
+    _re(B, r"'\[(bg10|fgm5)\]wishlist on steam'", "'[\\1]' .. T('wishlist_steam', 'wishlist on steam')", 0)
+    # 아레나
+    _re(A, r"'\[light_bg\]turn left\s+turn right'", "'[light_bg]' .. T('controls_turn', 'turn left                                      turn right')")
+    _re(A, r"'\[wavy_mid, cbyc\]arena clear!'", "'[wavy_mid, cbyc]' .. T('arena_clear', 'arena clear!')")
+    _re(A, r"'\[wavy_mid, fg\]gold: \[yellow\]'", "'[wavy_mid, fg]' .. T('gold_word', 'gold') .. ': [yellow]'")
+    _re(A, r"'\[fg, wavy\]choose one'", "T('choose_one', '[fg, wavy]choose one')")
+    _re(A, r"'\[wavy_mid, cbyc\]you died\.\.\.'", "'[wavy_mid, cbyc]' .. T('you_died', 'you died...')")
+    _re(A, r"\]gold gained: ", "]' .. T('k_gold_gained', 'gold gained') .. ': ", 4)
+    _re(A, r"\]interest: ", "]' .. T('k_interest', 'interest') .. ': ", 4)
+    _re(A, r"\]total: ", "]' .. T('k_total', 'total') .. ': ", 4)
+
 def package():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     if os.path.exists(OUT): os.remove(OUT)
@@ -223,5 +282,6 @@ def package():
 
 if __name__ == '__main__':
     stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_system(); patch_conf()
+    patch_i18n()
     if HIDPI: patch_hidpi()
     package()
