@@ -153,9 +153,34 @@ def patch_debug():
     a = "      self.transitioning = true"
     if a not in s: fail('mainmenu.lua: transitioning anchor not found')
     s = s.replace(a, "      print('[webdbg] transition_action fired')\n" + a, 1)
+    a = "      local run = system.load_run()"
+    if a not in s: fail('mainmenu.lua: load_run anchor not found')
+    s = s.replace(a, a + "\n      print('[webdbg] after load_run')", 1)
+    a = "      system.save_state()"
+    if a not in s: fail('mainmenu.lua: save_state anchor not found')
+    s = s.replace(a, "      print('[webdbg] before save_state')\n" + a + "\n      print('[webdbg] after save_state')", 1)
+    a = "      main:add(BuyScreen'buy_screen')"
+    if a not in s: fail('mainmenu.lua: main:add anchor not found')
+    s = s.replace(a, a + "\n      print('[webdbg] after main:add')", 1)
     a = "      main:go_to('buy_screen'"
     if a not in s: fail('mainmenu.lua: go_to anchor not found')
     s = s.replace(a, "      print('[webdbg] before go_to')\n" + a, 1)
+    open(p, 'w', encoding='utf-8').write(s)
+    # system.lua: save_state/load_run 내부 단계 추적
+    p = os.path.join(STAGING, 'engine', 'system.lua')
+    s = open(p, encoding='utf-8').read()
+    a = "  love.filesystem.createDirectory(\"\")"
+    if a not in s: fail('system.lua: createDirectory anchor not found')
+    s = s.replace(a, "  print('[webdbg] save_state: before mkdir')\n" + a + "\n  print('[webdbg] save_state: after mkdir')", 1)
+    a = '  local str = "return " .. table.tostring(state or {})'
+    if a not in s: fail('system.lua: tostring anchor not found')
+    s = s.replace(a, a + "\n  print('[webdbg] save_state: after tostring')", 1)
+    a = '  love.filesystem.write("state.txt", str)'
+    if a not in s: fail('system.lua: write anchor not found')
+    s = s.replace(a, "  print('[webdbg] save_state: before write')\n" + a + "\n  print('[webdbg] save_state: after write')", 1)
+    a = '  local chunk = love.filesystem.load("run_v4.txt")'
+    if a not in s: fail('system.lua: load anchor not found')
+    s = s.replace(a, "  print('[webdbg] load_run: before load')\n" + a + "\n  print('[webdbg] load_run: after load')", 1)
     open(p, 'w', encoding='utf-8').write(s)
 
 def package():
