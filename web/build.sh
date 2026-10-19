@@ -3,10 +3,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 web/patch_web.py
-npx --yes love.js@11.4.1 web/build/game.love web/build/site -c -t 'SNKRX 한국어 웹' -m 268435456
+postprocess() {
 # JS 에러 훅 삽입 (웹 부팅 실패 진단용 — wasm abort/JS 예외를 DOM에 표시)
-python3 - <<'PY'
-p = 'web/build/site/index.html'
+python3 - "$1" <<'PY'
+import sys
+D = sys.argv[1]
+p = D + '/index.html'
 s = open(p, encoding='utf-8').read()
 hook = """<script>
 window.addEventListener('error', function(e) {
@@ -27,8 +29,10 @@ if '<head>' in s and 'JS ERROR' not in s:
     open(p, 'w', encoding='utf-8').write(s)
 PY
 # 화면 비율/맞춤: 캔버스(960x540, 16:9)를 브라우저 크기에 맞춰 CSS로 확대/축소 (비율 유지)
-python3 - <<'PY'
-p = 'web/build/site/index.html'
+python3 - "$1" <<'PY'
+import sys
+D = sys.argv[1]
+p = D + '/index.html'
 s = open(p, encoding='utf-8').read()
 fit = """<style>
 body { overflow: hidden; }
@@ -42,18 +46,30 @@ if 'aspect-ratio: 16 / 9' not in s:
     open(p, 'w', encoding='utf-8').write(s)
 PY
 # 캐시 버스팅: Pages는 asset에 max-age=600을 강제 → 재배포 시 구버전 파일이 섞이는 문제 방지
-python3 - <<'PY'
+python3 - "$1" <<'PY'
+import sys
+D = sys.argv[1]
 import time
 ts = str(int(time.time()))
-p = 'web/build/site/index.html'
+p = D + '/index.html'
 s = open(p, encoding='utf-8').read()
 s = s.replace('src="game.js"', 'src="game.js?v=' + ts + '"')
 open(p, 'w', encoding='utf-8').write(s)
-p = 'web/build/site/game.js'
+p = D + '/game.js'
 s = open(p, encoding='utf-8').read()
 s = s.replace("var REMOTE_PACKAGE_BASE = 'game.data';", "var REMOTE_PACKAGE_BASE = 'game.data?v=" + ts + "';")
 open(p, 'w', encoding='utf-8').write(s)
 print('cache-bust ts=' + ts)
 PY
+}
+
+npx --yes love.js@11.4.1 web/build/game.love web/build/site -c -t 'SNKRX 한국어 웹' -m 268435456
+postprocess web/build/site
+
+# 프리뷰: 옵션 C(2배 해상도 렌더링) 빌드를 /preview/ 하위에 추가 배포 (라이브 빌드는 그대로)
+HIDPI=1 python3 web/patch_web.py
+npx --yes love.js@11.4.1 web/build/game_hidpi.love web/build/site/preview -c -t 'SNKRX 한국어 웹 (HiDPI 프리뷰)' -m 268435456
+postprocess web/build/site/preview
+
 echo "Done: web/build/site"
 ls -la web/build/site
