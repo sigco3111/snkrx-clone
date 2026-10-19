@@ -63,13 +63,15 @@ print('cache-bust ts=' + ts)
 PY
 }
 
-npx --yes love.js@11.4.1 web/build/game.love web/build/site -c -t 'SNKRX 한국어 웹' -m 268435456
+# 두 빌드를 모두 패치: 기본(HiDPI, 옵션 C: 2배 해상도 렌더링)과 classic(이전 pixelated 8px 렌더링)
+HIDPI=1 python3 web/patch_web.py
+# 루트 = HiDPI 빌드
+npx --yes love.js@11.4.1 web/build/game_hidpi.love web/build/site -c -t 'SNKRX 한국어 웹' -m 268435456
 postprocess web/build/site
 
-# 프리뷰: 옵션 C(2배 해상도 렌더링) 빌드를 /preview/ 하위에 추가 배포 (라이브 빌드는 그대로)
-HIDPI=1 python3 web/patch_web.py
-npx --yes love.js@11.4.1 web/build/game_hidpi.love web/build/site/preview -c -t 'SNKRX 한국어 웹 (HiDPI 프리뷰)' -m 268435456
-postprocess web/build/site/preview
+# 롤백용: 이전(HiDPI 이전) 빌드를 /classic/ 에 유지
+npx --yes love.js@11.4.1 web/build/game.love web/build/site/classic -c -t 'SNKRX 한국어 웹 (classic)' -m 268435456
+postprocess web/build/site/classic
 
 echo "Done: web/build/site"
 ls -la web/build/site
