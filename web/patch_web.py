@@ -6,7 +6,8 @@
 #   2. 옵션 메뉴의 창 크기/풀스크린/비디오 리셋 버튼을 웹에서 숨김
 #   3. FPS 오버레이 추가 (성능 확인용, `if web` 가드)
 #   4. engine/sound.lua: 웹에서 사운드 파일이 없으면 무음 더미 반환
-#   5. 사운드(52MB)·데스크톱 런타임(engine/love)·개발 파일 제외하고 .love 패키징
+#   5. conf.lua 창 크기 960x540 (16:9 비율 맞춤)
+#   6. 사운드(52MB)·데스크톱 런타임(engine/love)·개발 파일 제외하고 .love 패키징
 import os, shutil, sys, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -145,6 +146,20 @@ def patch_system():
     s = s.replace(a, a + "\n  if web then return {} end -- [web] love.js FS 행 방지", 1)
     open(p, 'w', encoding='utf-8').write(s)
 
+def patch_conf():
+    # conf.lua: 웹에서는 엔진이 sx=2, ww/wh=960x540 고정으로 그린다(engine/init.lua web 분기).
+    # 그런데 conf 창 크기가 1280x720이라 캔버스가 더 크게 잡혀 왼쪽 위에 960x540만 그려졌다.
+    # → 캔버스를 960x540(16:9, 게임 해상도 480x270의 정수 2배)으로 맞추고 리사이즈를 끈다.
+    #   화면 맞춤 확대는 CSS가 담당(build.sh): 마우스 좌표는 Emscripten이 CSS 배율을 보정한다.
+    p = os.path.join(STAGING, 'conf.lua')
+    s = open(p, encoding='utf-8').read()
+    for old, new in (('t.window.width = 1280', 't.window.width = 960'),
+                     ('t.window.height = 720', 't.window.height = 540'),
+                     ('t.window.resizable = true', 't.window.resizable = false')):
+        if old not in s: fail('conf.lua: ' + old + ' not found')
+        s = s.replace(old, new, 1)
+    open(p, 'w', encoding='utf-8').write(s)
+
 def package():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     if os.path.exists(OUT): os.remove(OUT)
@@ -156,4 +171,4 @@ def package():
     print('Built %s (%.1f MB)' % (OUT, os.path.getsize(OUT)/1e6))
 
 if __name__ == '__main__':
-    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_system(); package()
+    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_system(); patch_conf(); package()
