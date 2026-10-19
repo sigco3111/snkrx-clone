@@ -69,8 +69,10 @@ def patch_sound():
     p = os.path.join(STAGING, 'engine', 'sound.lua')
     open(p, 'w', encoding='utf-8').write('''-- [web] 웹 빌드에서는 사운드 파일을 제외하고 무음 더미로 대체한다 (로딩 경량화).
 local function web_dummy_sound()
-  local instance = setmetatable({}, {__index = function() return function() return nil end end})
-  return setmetatable({}, {__index = function(_, k)
+  -- volume/pitch는 수치 필드로 둔다: 메뉴 진입 시 main_song_instance 대상
+  -- trigger:tween(..., {volume = 0.5, pitch = 1})이 초기값을 읽기 때문.
+  local instance = setmetatable({volume = 0.5, pitch = 1}, {__index = function() return function() return nil end end})
+  return setmetatable({volume = 0.5, pitch = 1}, {__index = function(_, k)
     if k == 'play' then return function() return instance end end
     return function() return nil end
   end})
