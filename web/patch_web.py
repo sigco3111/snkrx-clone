@@ -106,6 +106,25 @@ def patch_group():
     if old not in s: fail('group.lua: goto continue block not found')
     open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
 
+
+def patch_trigger():
+    # trigger.lua tween: 초기값/목표값이 숫자가 아니면 건너뛴다.
+    # (웹 무음 더미처럼 수치가 아닌 필드가 섞일 때 lerp 크래시 방지; 데스크톱 동작과 동일)
+    p = os.path.join(STAGING, 'engine', 'game', 'trigger.lua')
+    s = open(p, encoding='utf-8').read()
+    old = """      for k, v in pairs(trigger.source) do
+        trigger.target[k] = math.lerp(t, trigger.initial_values[k], v)
+      end"""
+    new = """      for k, v in pairs(trigger.source) do
+        -- [web] 숫자가 아닌 값은 트윈 불가 → 건너뜀
+        local iv = trigger.initial_values[k]
+        if type(iv) == 'number' and type(v) == 'number' then
+          trigger.target[k] = math.lerp(t, iv, v)
+        end
+      end"""
+    if old not in s: fail('trigger.lua: tween update block not found')
+    open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
+
 def package():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     if os.path.exists(OUT): os.remove(OUT)
@@ -117,4 +136,4 @@ def package():
     print('Built %s (%.1f MB)' % (OUT, os.path.getsize(OUT)/1e6))
 
 if __name__ == '__main__':
-    stage(); patch_main(); patch_sound(); patch_group(); package()
+    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); package()
