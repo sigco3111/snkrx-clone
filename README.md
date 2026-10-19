@@ -3,6 +3,8 @@
 > 🎮 **SNKRX**의 한국어 + UI 개선 + Steam 비의존 fork
 >
 > **한글화 v0.1.12 완료** — 13개 영역 한글화 + 적 이름 표면 표시 (새 기능)
+>
+> **🌐 웹 버전 공개** — 설치 없이 [브라우저에서 바로 플레이](https://sigco3111.github.io/snkrx-clone/) (HiDPI 렌더링 + 한글 16px)
 
 [SNKRX](https://store.steampowered.com/app/915310/SNKRX/)는 영웅들이 자동으로 공격하는 뱀(snake)을 조종하는 아케이트 슈터 로그라이크입니다. 이 fork는 한국어 환경에 맞게 UI를 번역하고, Steam 클라이언트 없이도 플레이 가능하도록 만들었습니다.
 
@@ -34,12 +36,23 @@ love .  # 또는 brew install --cask love 후 love .
 | 항목 | 상태 |
 |---|---|
 | 플레이 | ✅ 메뉴 → 상점 → 아레나 전 구간 동작 확인 |
+| 렌더 해상도 | 내부 캔버스 2배(960x540) 렌더링 + 한글 16px 래스터 (HiDPI). 픽셀 아트는 선명하게(nearest) 확대됩니다 |
+| 화면 비율 | 16:9 비율을 유지한 채 브라우저 창에 맞춰 확대/축소 |
+| 한글화 | 상점/리롤/잠금·해제/재시작/아레나 클리어·사망·정산 문구 등 웹 빌드에서 영어로 남던 부분까지 한글화 (`patch_i18n`) |
 | 사운드/음악 | ❌ 제외 (빌드 경량화를 위해 사운드 에셋 미포함) |
 | 진행 저장 | ❌ 미지원 (새로고침 시 처음부터 — love.js 파일시스템 이슈 회피) |
-| 모바일(터치) | ❌ 미지원 — 마우스 + 키보드 필요 |
+| 모바일(터치) | ❌ 미지원 — 마우스 + 키보드 필요 (iPhone 터치 조작 불가) |
+| 성능 | GPU가 약한 기기에서는 2배 렌더링 때문에 FPS가 떨어질 수 있습니다. 이때는 [classic 빌드](https://sigco3111.github.io/snkrx-clone/classic/)(8px, 픽셀 확대)를 사용하세요 |
 | 창 크기/풀스크린 옵션 | 웹에서는 숨김 처리 |
 | FPS 표시 | 좌상단 오버레이로 항상 표시 (성능 확인용) |
-| 렌더 해상도 | 내부 캔버스 2배(960x540) 렌더링 + 한글 16px 래스터 (HiDPI). GPU가 약하면 [classic 빌드](https://sigco3111.github.io/snkrx-clone/classic/)(8px, 픽셀 확대) 사용 가능 |
+| 일부 영어 유지 | 이미지에 포함된 글자, 원작 고유 표기 등 일부 영어는 의도적으로 그대로 두었습니다 |
+
+### 주소
+
+| 빌드 | 주소 | 설명 |
+|---|---|---|
+| **HiDPI (기본)** | https://sigco3111.github.io/snkrx-clone/ | 2배 렌더링, 한글 16px |
+| **classic (롤백용)** | https://sigco3111.github.io/snkrx-clone/classic/ | 이전 빌드 (8px 한글, 픽셀 확대). 저사양 기기용 |
 
 ### 빌드/배포 방식
 
@@ -48,14 +61,25 @@ love .  # 또는 brew install --cask love 후 love .
   - love.js 호환 모드(PUC Lua 5.1) 대응: `goto` 제거, 트윈 값 가드
   - 사운드 무음 스텁, 세이브/로드 스텁 (love.js `love.filesystem` 행 회피)
   - 창 옵션 버튼 숨김, FPS 오버레이 추가
+  - 화면 비율: 16:9 유지 + 픽셀 선명 확대
+  - `patch_i18n`: 상점/리롤/잠금·해제/재시작/아레나 화면의 영어 하드코딩 문자열을 `T()` 번역 호출로 치환 (번역 키가 없으면 영어 기본값이 표시되어 안전)
   - HiDPI(`HIDPI=1`): 오프스크린 캔버스를 2배 해상도로 렌더링하고 한글은 16px 폰트를 0.5배로 그림 (레이아웃/마우스 좌표는 8px 기준 그대로). 루트(`/`)가 HiDPI, `/classic/`이 이전 빌드
-- `web/build.sh`: 패치 → `.love` 패키징 → love.js 변환 (`npx love.js -c`)
+- `web/patch_web.py`의 주요 단계: 웹 호환 패치 → `patch_hidpi`(HiDPI 렌더링) → `patch_i18n`(한글화 보완). `HIDPI=1`이면 HiDPI 빌드, 아니면 classic 빌드
+- `web/build.sh`: 패치 → `.love` 패키징 → love.js 변환 (`npx love.js -c`). HiDPI 빌드는 사이트 루트(`/`), classic 빌드는 `/classic/`에 출력
 - `.github/workflows/web-pages.yml`: master 푸시 시 자동 빌드 → GitHub Pages 배포
+
+로컬에서 웹 빌드를 확인하려면:
+
+```bash
+bash web/build.sh
+cd web/build/site && python3 -m http.server 8123   # http://localhost:8123
+```
 
 ### 웹 버전 크레딧
 
 - 원작: [a327ex/SNKRX](https://github.com/a327ex/SNKRX) (MIT License)
 - 원작 배경음악: **Kubbi — Ember** (웹 버전에는 용량 문제로 미포함)
+- 웹 변환: [love.js](https://github.com/Davidobot/love.js) (LÖVE → WebAssembly)
 
 ## 🎬 게임 영상
 
@@ -84,6 +108,11 @@ https://user-images.githubusercontent.com/409773/119258159-ea982b00-bb9e-11eb-80
 | 13 | **새 기능: 적 이름 표시** | 잡몹 / 추적자 / 보스 라벨이 HP바 위에 표시 |
 
 ## ✨ 변경 이력 (v0.1.13 ~ v0.1.25)
+
+### 웹 버전 (GitHub Pages, 2026-10-19)
+- 웹 빌드 추가: love.js 변환, 사운드/세이브 스텁, FPS 오버레이
+- HiDPI 빌드를 루트로 승격 (2배 내부 렌더링, 한글 16px, 선명한 픽셀 확대, 16:9 맞춤), 이전 빌드는 `/classic/`에 롤백용으로 유지
+- 상점/리롤/잠금·해제/재시작/아레나 문구 한글화 누락 수정 (`patch_i18n`)
 
 ### v0.1.25 — 풀스크린 OFF 후 종료 시 복원
 - `state.window_sx/sy` 백업 키 추가
@@ -185,6 +214,12 @@ snkrx-clone/
 │   │   └── NotoSansKR-Regular.ttf  # ★ 한글 폰트
 │   └── images/           # 스프라이트 (원본 자산)
 │
+├── web/                  # ★ 웹 빌드 (GitHub Pages)
+│   ├── patch_web.py      #   스테이징 패치 (웹 호환, patch_hidpi, patch_i18n)
+│   └── build.sh          #   패치 → .love → love.js 변환
+├── .github/workflows/
+│   └── web-pages.yml     # ★ master 푸시 시 Pages 자동 배포
+│
 ├── MODIFIED.md           # 변경 이력 (라이선스 의무)
 ├── README.md             # 이 파일
 └── LICENSE               # 원본 MIT 라이선스
@@ -203,7 +238,7 @@ snkrx-clone/
 
 ## 📜 라이선스
 
-- **코드**: 원본과 동일하게 MIT 라이선스
+- **코드**: 원본([a327ex/SNKRX](https://github.com/a327ex/SNKRX))과 동일하게 MIT 라이선스 (웹 빌드 포함)
 - **자산** (스프라이트, 사운드): 각 자산별 라이선스는 게임 내 크레딧 화면 참조
 - **Noto Sans KR**: SIL Open Font License 1.1
 
