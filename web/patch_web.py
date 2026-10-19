@@ -7,12 +7,15 @@
 #   3. FPS 오버레이 추가 (성능 확인용, `if web` 가드)
 #   4. engine/sound.lua: 웹에서 사운드 파일이 없으면 무음 더미 반환
 #   5. conf.lua 창 크기 960x540 (16:9 비율 맞춤)
-#   6. 사운드(52MB)·데스크톱 런타임(engine/love)·개발 파일 제외하고 .love 패키징
+#   6. (HIDPI=1 일 때만) 옵션 C: 내부 캔버스 2배 해상도 + 한글 16px 래스터 (patch_hidpi)
+#   7. 사운드(52MB)·데스크톱 런타임(engine/love)·개발 파일 제외하고 .love 패키징
 import os, shutil, sys, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STAGING = os.path.join(ROOT, 'web', 'build', 'staging')
-OUT = os.path.join(ROOT, 'web', 'build', 'game.love')
+HIDPI = os.environ.get('HIDPI') == '1'
+_sfx = '_hidpi' if HIDPI else ''
+STAGING = os.path.join(ROOT, 'web', 'build', 'staging' + _sfx)
+OUT = os.path.join(ROOT, 'web', 'build', 'game' + _sfx + '.love')
 
 EXCLUDE_DIRS = {'.git', 'builds', 'dist', 'web'}
 EXCLUDE_PREFIXES = (os.path.join('engine', 'love'), os.path.join('assets', 'sounds'))
@@ -160,6 +163,54 @@ def patch_conf():
         s = s.replace(old, new, 1)
     open(p, 'w', encoding='utf-8').write(s)
 
+def _sub(path, old, new, count=1):
+    p = os.path.join(STAGING, path)
+    s = open(p, encoding='utf-8').read()
+    if s.count(old) < count: fail(path + ': anchor not found: ' + old[:60])
+    open(p, 'w', encoding='utf-8').write(s.replace(old, new))
+
+def patch_hidpi():
+    # 옵션 C: 게임 로직/레이아웃은 480x270(8px 폰트) 기준 그대로 두고,
+    # 오프스크린 캔버스만 HD(=2)배 해상도로 렌더링한다. 한글은 16px 폰트를 0.5배로 그려 16px로 래스터.
+    #  - 캔버스: HD배 크기로 생성, draw_to 안에서 scale(HD) → 모든 그리기 좌표는 기존 그대로
+    #  - Canvas:draw/draw2: 출력 배율 /HD (최종 화면 960x540 = sx(2)/HD * 960)
+    #  - 폰트: 측정(getWidth/getHeight)은 8px 폰트 그대로 → 버튼/정렬/물리/마우스(mx/sx) 불변
+    #  - 셰이더(shadow/combine/replace/displacement)는 tc 기반이라 해상도 무관
+    _sub('main.lua', 'web = true\n', 'web = true\nHD = 2 -- [web] hidpi 내부 렌더 배율\n')
+    cv = 'engine/graphics/canvas.lua'
+    _sub(cv, 'love.graphics.newCanvas(self.w, self.h,', 'love.graphics.newCanvas(self.w*(HD or 1), self.h*(HD or 1),')
+    _sub(cv, 'love.graphics.draw(self.canvas, x or 0, y or 0, r or 0, sx or 1, sy or 1, ox or 0, oy or 0)',
+         'love.graphics.draw(self.canvas, x or 0, y or 0, r or 0, (sx or 1)/(HD or 1), (sy or 1)/(HD or 1), (ox or 0)*(HD or 1), (oy or 0)*(HD or 1))', count=2)
+    _sub(cv, '  action()\n  love.graphics.setCanvas()',
+         '  love.graphics.push()\n  love.graphics.origin()\n  love.graphics.scale(HD or 1, HD or 1)\n  action()\n  love.graphics.pop()\n  love.graphics.setCanvas()')
+    _sub('engine/graphics/font.lua', 'function Font:get_font_for_text(text)', """function Font:get_draw_font(text)
+  local f = self:get_font_for_text(text)
+  if HD and HD > 1 and f ~= self.font then
+    if not self.ko_font_hd then
+      self.ko_font_hd = love.graphics.newFont("assets/fonts/NotoSansKR-Regular.ttf", self.size*HD)
+    end
+    return self.ko_font_hd, HD
+  end
+  return f, 1
+end
+
+
+function Font:get_font_for_text(text)""")
+    _sub('engine/graphics/text.lua',
+         'love.graphics.print(c.character, active_font, x + c.x - self.w/2, y + c.y - self.h/2, c.r or 0, c.sx or 1, c.sy or c.sx or 1, c.ox or 0, c.oy or 0)',
+         """local draw_font, k = active_font, 1
+      if line.font.get_draw_font then draw_font, k = line.font:get_draw_font(c.character) end
+      love.graphics.print(c.character, draw_font, x + c.x - self.w/2, y + c.y - self.h/2, c.r or 0, (c.sx or 1)/k, (c.sy or c.sx or 1)/k, (c.ox or 0)*k, (c.oy or 0)*k)""")
+    g = 'engine/graphics/graphics.lua'
+    _sub(g, 'love.graphics.print(text, active_font, x, y, r or 0, sx or 1, sy or 1, ox or 0, oy or 0)',
+         """local draw_font, k = active_font, 1
+  if font.get_draw_font then draw_font, k = font:get_draw_font(text) end
+  love.graphics.print(text, draw_font, x, y, r or 0, (sx or 1)/k, (sy or 1)/k, (ox or 0)*k, (oy or 0)*k)""")
+    _sub(g, 'love.graphics.print(text, active_font, x, y, r or 0, sx or 1, sy or 1, (ox or 0) + active_w/2, (oy or 0) + active_h/2)',
+         """local draw_font, k = active_font, 1
+  if font.get_draw_font then draw_font, k = font:get_draw_font(text) end
+  love.graphics.print(text, draw_font, x, y, r or 0, (sx or 1)/k, (sy or 1)/k, ((ox or 0) + active_w/2)*k, ((oy or 0) + active_h/2)*k)""")
+
 def package():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     if os.path.exists(OUT): os.remove(OUT)
@@ -171,4 +222,6 @@ def package():
     print('Built %s (%.1f MB)' % (OUT, os.path.getsize(OUT)/1e6))
 
 if __name__ == '__main__':
-    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_system(); patch_conf(); package()
+    stage(); patch_main(); patch_sound(); patch_group(); patch_trigger(); patch_system(); patch_conf()
+    if HIDPI: patch_hidpi()
+    package()
